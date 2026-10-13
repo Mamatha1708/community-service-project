@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Government Scheme Recommender | Kalamkari Connect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Header -->
+  <div class="text-center mb-5">
+    <span class="text-uppercase fw-bold text-danger small letter-spacing">Welfare & Institutional Credit</span>
+    <h1 class="font-heritage fw-bold text-dark mt-2 mb-3">Government Scheme Recommender</h1>
+    <p class="text-muted max-w-700 mx-auto">
+      Discover verified central and state welfare initiatives, tool-kit grants, subsidized exhibition stalls, and collateral-free enterprise credit available for traditional handloom and Kalamkari artisans.
+    </p>
+  </div>
+
+  <!-- Official Portal Verification & Privacy Notice -->
+  <div class="alert alert-secondary border-0 shadow-sm d-flex align-items-center gap-3 mb-4 rounded-3" role="alert">
+    <i class="bi bi-shield-check fs-3 text-success"></i>
+    <div class="small">
+      <strong>Verified Information Notice:</strong> All listed schemes are curated from official portals of the Ministry of Textiles, MSME, and the Government of Andhra Pradesh. We never ask for Aadhaar numbers, PAN cards, or bank credentials. Always verify latest operational guidelines directly through the linked official government portals.
+    </div>
+  </div>
+
+  <!-- Filter & Eligibility Checklist -->
+  <div class="card card-kalamkari p-4 border-0 shadow-sm mb-5">
+    <h5 class="font-heritage text-dark mb-3"><i class="bi bi-sliders text-danger me-2"></i> Find Schemes You May Qualify For</h5>
+    <form method="GET" action="{{ url_for('government_schemes') }}" id="schemeFilterForm">
+      <div class="row g-3 align-items-center mb-3">
+        <!-- State -->
+        <div class="col-md-4 col-sm-6">
+          <label class="form-label fw-semibold small text-dark">State / Region</label>
+          <select name="state" class="form-select form-select-sm">
+            <option value="all" {% if filters.state == 'all' %}selected{% endif %}>All India (Central Schemes)</option>
+            <option value="andhra_pradesh" {% if filters.state == 'andhra_pradesh' %}selected{% endif %}>Andhra Pradesh (Srikalahasti / Machilipatnam)</option>
+            <option value="telangana" {% if filters.state == 'telangana' %}selected{% endif %}>Telangana</option>
+          </select>
+        </div>
+
+        <!-- Artisan Category -->
+        <div class="col-md-4 col-sm-6">
+          <label class="form-label fw-semibold small text-dark">Artisan / Enterprise Category</label>
+          <select name="category" class="form-select form-select-sm">
+            <option value="all" {% if filters.category == 'all' %}selected{% endif %}>All Categories</option>
+            <option value="individual_artisan" {% if filters.category == 'individual_artisan' %}selected{% endif %}>Individual Hereditary Artisan</option>
+            <option value="cooperative_shg" {% if filters.category == 'cooperative_shg' %}selected{% endif %}>Artisan SHG / Weaver Cooperative</option>
+            <option value="master_artisan" {% if filters.category == 'master_artisan' %}selected{% endif %}>Master Craftsperson / Awardee</option>
+            <option value="msme_exporter" {% if filters.category == 'msme_exporter' %}selected{% endif %}>Micro Craft Enterprise / MSME</option>
+          </select>
+        </div>
+
+        <!-- Search Keyword -->
+        <div class="col-md-4 col-sm-12">
+          <label class="form-label fw-semibold small text-dark">Search by Keyword / Ministry</label>
+          <div class="input-group input-group-sm">
+            <input type="text" name="q" class="form-control" placeholder="e.g. loan, tool-kit, Pehchan..." value="{{ filters.q }}">
+            <button class="btn btn-kalamkari-primary" type="submit">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Eligibility Checklist Checkboxes -->
+      <div class="p-3 rounded-3 bg-light border">
+        <label class="form-label fw-semibold small text-dark d-block mb-2">Check All Qualifications That Apply to You:</label>
+        <div class="row g-2 small">
+          <div class="col-md-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="has_pehchan" value="1" id="chkPehchan" {% if filters.has_pehchan %}checked{% endif %}>
+              <label class="form-check-label" for="chkPehchan">
+                I have a <strong>Pehchan Artisan ID Card</strong>
+              </label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="has_bank" value="1" id="chkBank" {% if filters.has_bank %}checked{% endif %}>
+              <label class="form-check-label" for="chkBank">
+                I have an active <strong>Savings Bank Account</strong>
+              </label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="is_women" value="1" id="chkWomen" {% if filters.is_women %}checked{% endif %}>
+              <label class="form-check-label" for="chkWomen">
+                I belong to <strong>Women / SC / ST / Minority</strong> group
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-3">
+        <a href="{{ url_for('government_schemes') }}" class="btn btn-outline-secondary btn-sm">Reset Filters</a>
+        <button type="submit" class="btn btn-kalamkari-primary btn-sm px-4">
+          <i class="bi bi-filter me-1"></i> Apply Eligibility Matching
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Schemes Result List -->
+  <div class="row g-4">
+    {% for s in schemes %}
+      <div class="col-12">
+        <div class="card card-kalamkari p-4 border-0 shadow-sm">
+          <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+            <div>
+              <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold me-2">
+                <i class="bi bi-patch-check-fill me-1"></i> {{ s.verified_status }}
+              </span>
+              <span class="badge bg-light text-muted border small">
+                Verified: {{ s.verified_date }}
+              </span>
+            </div>
+            <div>
+              <span class="badge bg-warning text-dark fw-bold">
+                Match Score: {{ s.match_score }}%
+              </span>
+            </div>
+          </div>
+
+          <h4 class="font-heritage text-dark mt-2 mb-1">{{ s.name }}</h4>
+          <div class="small text-danger fw-semibold mb-3">
+            <i class="bi bi-building me-1"></i> {{ s.ministry }}
+          </div>
+
+          <!-- Benefits & Financial Assistance -->
+          <div class="p-3 rounded-3 mb-3" style="background: #FAF7F0; border-left: 4px solid var(--k-gold);">
+            <div class="small fw-bold text-dark mb-1">
+              <i class="bi bi-gift-fill text-warning me-1"></i> Purpose & Financial Benefits:
+            </div>
+            <p class="small text-dark mb-2" style="line-height: 1.6;">{{ s.purpose_and_benefits }}</p>
+            <div class="small fw-semibold text-success">
+              <i class="bi bi-cash-coin me-1"></i> <strong>Assistance Scale:</strong> {{ s.financial_assistance }}
+            </div>
+          </div>
+
+          <!-- Eligibility & Match Reason -->
+          <div class="row g-3 small mb-3">
+            <div class="col-md-6">
+              <strong class="text-dark d-block mb-1"><i class="bi bi-person-check text-primary me-1"></i> Eligibility Criteria:</strong>
+              <ul class="mb-0 ps-3 text-muted">
+                {% for crit in s.eligibility_criteria %}
+                  <li>{{ crit }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div class="col-md-6">
+              <strong class="text-dark d-block mb-1"><i class="bi bi-file-earmark-text text-secondary me-1"></i> Required Documents:</strong>
+              <ul class="mb-0 ps-3 text-muted">
+                {% for doc in s.required_documents %}
+                  <li>{{ doc }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+
+          <!-- How to Apply & Source URL -->
+          <div class="p-3 bg-light rounded-3 small text-muted mb-3">
+            <strong class="text-dark"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Application Instructions:</strong>
+            <p class="mb-0 mt-1">{{ s.application_instructions }}</p>
+          </div>
+
+          <!-- Action Footer -->
+          <div class="d-flex flex-wrap justify-content-between align-items-center pt-3 border-top gap-2">
+            <div class="small text-muted">
+              <i class="bi bi-info-circle me-1 text-primary"></i> <strong>Status:</strong> {{ s.eligibility_status }}
+            </div>
+            <div>
+              <a href="{{ s.official_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-kalamkari-primary px-3">
+                <i class="bi bi-box-arrow-up-right me-1"></i> Visit Official Government Portal &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if not schemes %}
+    <div class="text-center py-5">
+      <i class="bi bi-journal-x display-3 text-muted mb-3"></i>
+      <h5>No matching government schemes found</h5>
+      <p class="text-muted">Try clearing your filters to see all available central and state artisan support schemes.</p>
+      <a href="{{ url_for('government_schemes') }}" class="btn btn-outline-dark">Reset All Filters</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

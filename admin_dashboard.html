@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Management Portal | Kalamkari Connect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Admin Header -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center bg-white p-4 rounded-4 shadow-sm border mb-4">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="fs-2">🏛️</span>
+        <h2 class="font-heritage fw-bold mb-0 text-dark">CSP Administration & Moderation Portal</h2>
+        <span class="badge bg-danger">Coordinator Access</span>
+      </div>
+      <p class="text-muted small mb-0">
+        Supervise artisan clusters, inspect handloom listings, and manage community demo orders.
+      </p>
+    </div>
+    <div class="d-flex gap-2 mt-3 mt-md-0">
+      <span class="badge bg-light text-dark border p-2">
+        <i class="bi bi-clock-history me-1"></i> System Active &bull; SQLite DB Persistent
+      </span>
+    </div>
+  </div>
+
+  <!-- KPI Tiles -->
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card">
+        <span class="text-muted small text-uppercase fw-semibold">Total Users</span>
+        <div class="stat-number">{{ users|length }}</div>
+        <span class="small text-muted">{{ total_artisans }} Artisans &bull; {{ total_customers }} Buyers</span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card terracotta">
+        <span class="text-muted small text-uppercase fw-semibold">Active Crafts Listed</span>
+        <div class="stat-number">{{ products|length }}</div>
+        <span class="small text-muted">Across Srikalahasti & Pedana</span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card gold">
+        <span class="text-muted small text-uppercase fw-semibold">Total Orders Placed</span>
+        <div class="stat-number">{{ orders|length }}</div>
+        <span class="small text-primary"><i class="bi bi-truck me-1"></i> Demo transactions</span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card">
+        <span class="text-muted small text-uppercase fw-semibold">Gross Craft Value</span>
+        <div class="stat-number">₹{{ "{:,.0f}".format(total_gmv) }}</div>
+        <span class="small text-success"><i class="bi bi-shield-check me-1"></i> 100% direct artisan price</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs for Admin Controls -->
+  <div class="card card-kalamkari border-0 shadow-sm p-4">
+    <ul class="nav nav-pills mb-4 border-bottom pb-3" id="adminTabs" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active fw-bold" id="orders-tab" data-bs-toggle="tab" data-bs-target="#tab-admin-orders" type="button">
+          <i class="bi bi-receipt me-1"></i> Order Management ({{ orders|length }})
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold" id="products-tab" data-bs-toggle="tab" data-bs-target="#tab-admin-products" type="button">
+          <i class="bi bi-palette me-1"></i> Craft Moderation ({{ products|length }})
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold" id="users-tab" data-bs-toggle="tab" data-bs-target="#tab-admin-users" type="button">
+          <i class="bi bi-people me-1"></i> User Roles & Accounts ({{ users|length }})
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="adminTabsContent">
+      <!-- 1. Orders Management -->
+      <div class="tab-pane fade show active" id="tab-admin-orders">
+        <h5 class="fw-bold text-dark mb-3">All Customer Orders & Status Updates</h5>
+        {% if orders %}
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light small">
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer Info</th>
+                  <th>Items Ordered</th>
+                  <th>Total</th>
+                  <th>Current Status</th>
+                  <th>Update Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+                  <tr>
+                    <td>
+                      <code>{{ order.order_number }}</code>
+                      <div class="small text-muted">{{ order.created_at.strftime('%d/%m/%Y') }}</div>
+                    </td>
+                    <td>
+                      <div class="fw-bold">{{ order.full_name }}</div>
+                      <div class="small text-muted">{{ order.email }} | {{ order.phone }}</div>
+                      <div class="small text-muted">{{ order.city }} ({{ order.payment_method }})</div>
+                    </td>
+                    <td>
+                      <ul class="list-unstyled mb-0 small">
+                        {% for item in order.items %}
+                          <li>&bull; {{ item.product_title }} (x{{ item.quantity }})</li>
+                        {% endfor %}
+                      </ul>
+                    </td>
+                    <td class="fw-bold text-danger">₹{{ "{:,.0f}".format(order.total_amount) }}</td>
+                    <td>
+                      <span class="badge {% if order.status == 'Delivered' %}bg-success{% elif order.status == 'Shipped' %}bg-info text-dark{% elif order.status == 'Processing' %}bg-warning text-dark{% elif order.status == 'Cancelled' %}bg-danger{% else %}bg-secondary{% endif %}">
+                        {{ order.status }}
+                      </span>
+                    </td>
+                    <td>
+                      <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="POST" class="d-flex gap-1 align-items-center">
+                        <select name="status" class="form-select form-select-sm" style="width: 130px;">
+                          <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                          <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
+                          <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                          <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                          <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-outline-primary" title="Save Status">
+                          <i class="bi bi-check2"></i>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-4 text-muted">No orders placed on the system yet.</div>
+        {% endif %}
+      </div>
+
+      <!-- 2. Product Moderation -->
+      <div class="tab-pane fade" id="tab-admin-products">
+        <h5 class="fw-bold text-dark mb-3">All Platform Crafts & Quality Review</h5>
+        {% if products %}
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light small">
+                <tr>
+                  <th style="width: 60px;">Preview</th>
+                  <th>Craft Title</th>
+                  <th>Artisan & Cluster</th>
+                  <th>Style & Motif</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th class="text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for prod in products %}
+                  <tr>
+                    <td>
+                      <img src="{{ prod.image_url }}" alt="{{ prod.title }}" class="rounded border" style="width: 50px; height: 50px; object-fit: cover;">
+                    </td>
+                    <td>
+                      <a href="{{ url_for('product_detail', product_id=prod.id) }}" class="fw-bold text-dark text-decoration-none">
+                        {{ prod.title }}
+                      </a>
+                    </td>
+                    <td>
+                      <div class="small fw-semibold">{{ prod.artisan.full_name }}</div>
+                      <span class="text-muted small">{{ prod.artisan.artisan_cluster or 'Andhra Pradesh' }}</span>
+                    </td>
+                    <td>
+                      <span class="badge-kalamkari-style small">{{ prod.kalamkari_style }}</span>
+                      <div class="small text-muted">{{ prod.motif_type }}</div>
+                    </td>
+                    <td class="fw-bold text-danger">₹{{ "{:,.0f}".format(prod.price) }}</td>
+                    <td><span class="badge bg-secondary">{{ prod.stock }} left</span></td>
+                    <td class="text-end">
+                      <form action="{{ url_for('delete_product', product_id=prod.id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger btn-confirm-delete" title="Remove Listing">
+                          <i class="bi bi-trash"></i> Delete
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-4 text-muted">No products available.</div>
+        {% endif %}
+      </div>
+
+      <!-- 3. User Roles & Accounts Management -->
+      <div class="tab-pane fade" id="tab-admin-users">
+        <h5 class="fw-bold text-dark mb-3">Registered Users and Role Permissions</h5>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light small">
+              <tr>
+                <th>Username</th>
+                <th>Full Name & Contact</th>
+                <th>Role</th>
+                <th>Artisan Lineage</th>
+                <th>Status</th>
+                <th class="text-end">Toggle Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for u in users %}
+                <tr>
+                  <td>
+                    <strong>@{{ u.username }}</strong>
+                    <div class="small text-muted">{{ u.created_at.strftime('%d %b %Y') }}</div>
+                  </td>
+                  <td>
+                    <div class="fw-bold">{{ u.full_name }}</div>
+                    <div class="small text-muted">{{ u.email }} | {{ u.phone or 'N/A' }}</div>
+                  </td>
+                  <td>
+                    <span class="badge {% if u.role == 'admin' %}bg-danger{% elif u.role == 'artisan' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %} text-uppercase">
+                      {{ u.role }}
+                    </span>
+                  </td>
+                  <td>
+                    {% if u.role == 'artisan' %}
+                      <div class="small">{{ u.artisan_cluster }}</div>
+                      <span class="text-muted small">{{ u.experience_years }}+ Yrs Experience</span>
+                    {% else %}
+                      <span class="text-muted small">-</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if u.is_active %}
+                      <span class="badge bg-success">Active</span>
+                    {% else %}
+                      <span class="badge bg-secondary">Disabled</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-end">
+                    {% if u.id != current_user.id %}
+                      <form action="{{ url_for('admin_toggle_user', user_id=u.id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+                          {{ 'Deactivate' if u.is_active else 'Activate' }}
+                        </button>
+                      </form>
+                    {% else %}
+                      <span class="small text-muted fst-italic">Current Admin</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

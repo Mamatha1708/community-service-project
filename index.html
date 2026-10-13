@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Kalamkari Connect | Support Artisans, Celebrate Tradition{% endblock %}
+
+{% block content %}
+<!-- ==============================================================================
+     MAIN HERO SECTION: Closely Reproducing the Reference Design
+     - 45% Left: Rich Dark Brown Earthy Text Column
+     - 55% Right: Authentic Traditional Kalamkari Peacock Textile Artwork
+     ============================================================================== -->
+<section class="kalamkari-hero-section">
+  <div class="kalamkari-hero-grid">
+    <!-- Left Column: Rich Dark Brown Earthy Background (~45% width on desktop) -->
+    <div class="hero-text-col">
+      <div class="hero-content-inner">
+        <h1 class="hero-main-heading">
+          Support Artisans,<br>
+          Celebrate Tradition
+        </h1>
+        <p class="hero-subtext">
+          Buy authentic Kalamkari products<br class="d-none d-sm-inline">
+          and support our skilled artisans.
+        </p>
+        <a href="{{ url_for('marketplace') }}" class="btn btn-shop-now">
+          Shop Now
+        </a>
+      </div>
+    </div>
+
+    <!-- Right Column: Authentic Kalamkari Textile Artwork (~55% width on desktop) -->
+    <div class="hero-image-col">
+      <img src="{{ url_for('static', filename='images/kalamkari_peacock_hero.jpg') }}" 
+           alt="Authentic Kalamkari Hand-Painted Peacock Textile Art" 
+           class="hero-textile-img">
+    </div>
+  </div>
+</section>
+
+<!-- ==============================================================================
+     FOUR FEATURE BLOCKS STRIP: Immediately Below the Hero Section
+     Full-Width Ivory Strip with 4 Equal Columns, Centered Teal Icons and Labels
+     ============================================================================== -->
+<section class="kalamkari-features-strip">
+  <div class="container">
+    <div class="row g-3 g-md-4 text-center justify-content-center align-items-center">
+      <!-- Feature 1: Authentic Products -->
+      <div class="col-6 col-md-3">
+        <div class="feature-block-item">
+          <div class="feature-icon-wrapper">
+            <img src="{{ url_for('static', filename='images/feature_authentic.svg') }}" 
+                 alt="Authentic Products Verified Badge" 
+                 width="46" height="46" 
+                 class="feature-svg-icon">
+          </div>
+          <p class="feature-title-label">Authentic Products</p>
+        </div>
+      </div>
+
+      <!-- Feature 2: Direct from Artisans -->
+      <div class="col-6 col-md-3">
+        <div class="feature-block-item">
+          <div class="feature-icon-wrapper">
+            <img src="{{ url_for('static', filename='images/feature_artisans.svg') }}" 
+                 alt="Direct from Artisans Community" 
+                 width="46" height="46" 
+                 class="feature-svg-icon">
+          </div>
+          <p class="feature-title-label">Direct from Artisans</p>
+        </div>
+      </div>
+
+      <!-- Feature 3: AI Based Recommendations -->
+      <div class="col-6 col-md-3">
+        <div class="feature-block-item">
+          <div class="feature-icon-wrapper">
+            <img src="{{ url_for('static', filename='images/feature_ai.svg') }}" 
+                 alt="AI Based Recommendations Neural Brain" 
+                 width="46" height="46" 
+                 class="feature-svg-icon">
+          </div>
+          <p class="feature-title-label">AI Based Recommendations</p>
+        </div>
+      </div>
+
+      <!-- Feature 4: Secure Payments -->
+      <div class="col-6 col-md-3">
+        <div class="feature-block-item">
+          <div class="feature-icon-wrapper">
+            <img src="{{ url_for('static', filename='images/feature_secure.svg') }}" 
+                 alt="Secure Payments Shield Checkmark" 
+                 width="46" height="46" 
+                 class="feature-svg-icon">
+          </div>
+          <p class="feature-title-label">Secure Payments</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==============================================================================
+     LIVING HERITAGE & CURATED CRAFTS
+     Preserving Srikalahasti Pen Kalamkari & Machilipatnam Block Kalamkari
+     ============================================================================== -->
+<section class="py-5" style="background-color: #FAF7F0;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="text-uppercase fw-bold text-danger small letter-spacing">Geographical Indication (GI) Crafts</span>
+      <h2 class="font-heritage fw-bold text-dark mt-2 mb-3">Living Traditions of Srikalahasti & Machilipatnam</h2>
+      <p class="text-muted max-w-700 mx-auto">
+        Every handcrafted scroll, saree, and dupatta directly supports hereditary craft families with transparent compensation.
+      </p>
+    </div>
+
+    {% if featured_products %}
+      <div class="row g-4 justify-content-center">
+        {% for product in featured_products %}
+          <div class="col-md-6 col-lg-4">
+            <div class="card card-kalamkari h-100 border-0 shadow-sm">
+              <div class="position-relative overflow-hidden bg-light text-center" style="height: 230px;">
+                <img src="{{ product.image_url }}" alt="{{ product.title }}" class="w-100 h-100 object-fit-cover">
+                <span class="position-absolute top-2 start-2 badge bg-dark bg-opacity-75">
+                  {{ product.kalamkari_style }}
+                </span>
+              </div>
+              <div class="card-body p-4 d-flex flex-column">
+                <div class="small text-danger fw-semibold mb-1">{{ product.motif_type }}</div>
+                <h5 class="card-title font-heritage fw-bold text-dark mb-2">{{ product.title }}</h5>
+                <p class="card-text text-muted small flex-grow-1" style="line-height: 1.6;">
+                  {{ product.description|truncate(110) }}
+                </p>
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
+                  <span class="fs-5 fw-bold text-dark">₹{{ "%.2f"|format(product.price) }}</span>
+                  <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-sm btn-kalamkari-primary">
+                    View Craft &rarr;
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="text-center mt-5">
+        <a href="{{ url_for('marketplace') }}" class="btn btn-outline-dark px-4 py-2 fw-semibold">
+          Explore All Crafts in Marketplace &rarr;
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

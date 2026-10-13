@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <radialGradient id="parchment-scroll" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#FFF8E7"/>
+      <stop offset="100%" stop-color="#ECD8B6"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#parchment-scroll)"/>
+
+  <!-- Ornate Temple Mural Border -->
+  <rect x="25" y="25" width="550" height="550" fill="none" stroke="#A93C24" stroke-width="8"/>
+  <rect x="38" y="38" width="524" height="524" fill="none" stroke="#D4A017" stroke-width="4"/>
+  <rect x="48" y="48" width="504" height="504" fill="none" stroke="#1B365D" stroke-width="2"/>
+
+  <!-- Temple Canopy Arch -->
+  <path d="M120 220 Q300 110 480 220 L480 460 L120 460 Z" fill="#FBF3DE" stroke="#A93C24" stroke-width="3"/>
+  <path d="M150 230 Q300 135 450 230" fill="none" stroke="#D4A017" stroke-width="3"/>
+  
+  <!-- Kalash at Arch Apex -->
+  <path d="M290 120 L310 120 L300 95 Z" fill="#D4A017"/>
+  <circle cx="300" cy="90" r="5" fill="#A93C24"/>
+
+  <!-- Figurative Depiction (Sacred Bow Ceremony) -->
+  <!-- Celestial Bow (Pinaka) -->
+  <path d="M220 180 Q300 240 380 180" fill="none" stroke="#1B365D" stroke-width="6" stroke-linecap="round"/>
+  <path d="M220 180 L380 180" fill="none" stroke="#D4A017" stroke-width="2" stroke-dasharray="6 3"/>
+
+  <!-- Divine Aura / Prabhavali -->
+  <circle cx="300" cy="300" r="110" fill="none" stroke="#D4A017" stroke-width="3" stroke-dasharray="10 5"/>
+  <circle cx="300" cy="300" r="85" fill="#A93C24" opacity="0.1"/>
+
+  <!-- Stylized Royal Figures (Temple Pen Style) -->
+  <!-- Central Dignitary Figure -->
+  <circle cx="300" cy="270" r="28" fill="#1B365D"/> <!-- Crown / Jata -->
+  <polygon points="290,245 310,245 300,225" fill="#D4A017"/> <!-- Kirita Crown -->
+  <path d="M275 305 Q300 295 325 305 L335 410 L265 410 Z" fill="#A93C24"/> <!-- Garments -->
+  <path d="M285 305 L300 370 L315 305" stroke="#D4A017" stroke-width="2" fill="none"/>
+  
+  <!-- Adoring Swan & Deer Motifs -->
+  <path d="M160 410 C180 380 210 380 220 410 Z" fill="#1B365D"/>
+  <circle cx="170" cy="385" r="8" fill="#1B365D"/>
+  <path d="M440 410 C420 380 390 380 380 410 Z" fill="#1B365D"/>
+  <circle cx="430" cy="385" r="8" fill="#1B365D"/>
+
+  <!-- Lotus Water Base -->
+  <path d="M120 460 Q300 480 480 460 L480 490 Q300 510 120 490 Z" fill="#A93C24"/>
+
+  <!-- Badge Label -->
+  <rect x="165" y="525" width="270" height="34" rx="17" fill="#A93C24"/>
+  <text x="300" y="547" fill="#FFFDF7" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" letter-spacing="1">SRIKALAHASTI TEMPLE SCROLL</text>
+</svg>

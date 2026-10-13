@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="48" height="48">
+  <!-- AI Brain / Smart Recommendations Icon in Teal -->
+  <g fill="none" stroke="#0D625D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Left Hemisphere -->
+    <path d="M30 14 C23 14 18 19 18 25 C15 26 13 29 13 33 C13 36 15 39 18 40 C18 46 23 50 30 50 L30 14 Z" fill="#0D625D" fill-opacity="0.15"/>
+    <!-- Right Hemisphere -->
+    <path d="M34 14 C41 14 46 19 46 25 C49 26 51 29 51 33 C51 36 49 39 46 40 C46 46 41 50 34 50 L34 14 Z" fill="#0D625D" fill-opacity="0.15"/>
+    
+    <!-- Central Divider -->
+    <line x1="32" y1="14" x2="32" y2="50" stroke="#0D625D" stroke-width="3"/>
+    
+    <!-- Neural Network Nodes & Circuit Lines Inside -->
+    <circle cx="24" cy="24" r="2.5" fill="#0D625D"/>
+    <circle cx="22" cy="38" r="2.5" fill="#0D625D"/>
+    <circle cx="40" cy="24" r="2.5" fill="#0D625D"/>
+    <circle cx="42" cy="38" r="2.5" fill="#0D625D"/>
+    
+    <line x1="24" y1="24" x2="30" y2="30"/>
+    <line x1="22" y1="38" x2="30" y2="34"/>
+    <line x1="40" y1="24" x2="34" y2="30"/>
+    <line x1="42" y1="38" x2="34" y2="34"/>
+  </g>
+</svg>

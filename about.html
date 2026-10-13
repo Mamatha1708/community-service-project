@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}About Kalamkari Connect | Heritage & Artisan Empowerment{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <span class="text-uppercase fw-bold text-danger small letter-spacing">Community Service Project (CSP 2026)</span>
+    <h1 class="font-heritage fw-bold text-dark mt-2 mb-3">About Kalamkari Connect</h1>
+    <p class="text-muted max-w-700 mx-auto">
+      An AI-powered digital initiative bridging the centuries-old heritage of Indian hand-painted textiles with sustainable, fair-trade e-commerce.
+    </p>
+  </div>
+
+  <div class="row g-5 align-items-center mb-5">
+    <div class="col-lg-6">
+      <h3 class="font-heritage text-dark mb-3">Preserving Living Heritage</h3>
+      <p class="text-muted" style="line-height: 1.8;">
+        Kalamkari (from Persian <em>qalam</em> meaning pen, and <em>kari</em> meaning craft) is a celebrated GI-tagged Indian textile art form rooted in Andhra Pradesh. Flourishing in <strong>Srikalahasti</strong> and <strong>Machilipatnam</strong>, it utilizes natural dyes derived from madder roots, myrobalan nuts, and fermented iron jaggery water across a rigorous 17-step organic process.
+      </p>
+      <p class="text-muted" style="line-height: 1.8;">
+        Despite its cultural grandeur, hereditary artisans frequently face exploitation from intermediaries and lack direct market access. <strong>Kalamkari Connect</strong> empowers these master craftspeople through direct-to-consumer sales, transparent pricing, and multilingual AI assistance.
+      </p>
+    </div>
+    <div class="col-lg-6 text-center">
+      <div class="card card-kalamkari p-4 shadow-sm border-0">
+        <img src="{{ url_for('static', filename='images/kalamkari_peacock_hero.jpg') }}" alt="Kalamkari Peacock Textile" class="img-fluid rounded-3 shadow-sm mb-3">
+        <p class="small text-muted mb-0 fst-italic">Authentic pen Kalamkari motif depicting the celestial blue peacock, natural vegetable dyes on unbleached cotton.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 text-center mt-2">
+    <div class="col-md-4">
+      <div class="card h-100 p-4 border-0 shadow-sm" style="background: #FAF7F0;">
+        <div class="fs-1 text-danger mb-2"><i class="bi bi-people-fill"></i></div>
+        <h5 class="fw-bold text-dark">Direct Artisan Support</h5>
+        <p class="small text-muted mb-0">100% of product proceeds directly reach hereditary artisan families with fair compensation and no middlemen.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 p-4 border-0 shadow-sm" style="background: #FAF7F0;">
+        <div class="fs-1 text-primary mb-2"><i class="bi bi-patch-check-fill"></i></div>
+        <h5 class="fw-bold text-dark">Authenticity & GI Tag</h5>
+        <p class="small text-muted mb-0">Every listed craft is curated for genuine Geographical Indication provenance from Srikalahasti or Machilipatnam.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 p-4 border-0 shadow-sm" style="background: #FAF7F0;">
+        <div class="fs-1 text-success mb-2"><i class="bi bi-cpu-fill"></i></div>
+        <h5 class="fw-bold text-dark">AI-Powered Storytelling</h5>
+        <p class="small text-muted mb-0">Artisans utilize Kalamkari Mitra AI to generate captivating product descriptions, heritage stories, and social captions.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

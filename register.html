@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Register | Kalamkari Connect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+      <div class="card card-kalamkari border-0 shadow-lg p-4 p-md-5">
+        <div class="text-center mb-4">
+          <span class="fs-1">🦚</span>
+          <h2 class="font-heritage fw-bold text-dark mt-2">Join Kalamkari Connect</h2>
+          <p class="text-muted small">
+            Register to showcase your artisanal handlooms or support rural craft clusters.
+          </p>
+        </div>
+
+        <form action="{{ url_for('register') }}" method="POST" id="registerForm">
+          <!-- Role Selector -->
+          <div class="mb-4 p-3 rounded-3 bg-light border">
+            <label class="form-label fw-bold text-dark mb-2">
+              <i class="bi bi-person-badge me-1"></i> I am joining as:
+            </label>
+            <select name="role" id="roleSelect" class="form-select form-select-lg fw-semibold" required>
+              <option value="customer" {% if role == 'customer' %}selected{% endif %}>
+                Conscientious Buyer / Heritage Art Collector
+              </option>
+              <option value="artisan" {% if role == 'artisan' %}selected{% endif %}>
+                Kalamkari Artisan / Craftsperson (Sell Crafts)
+              </option>
+            </select>
+            <div class="form-text small text-muted">
+              Choose <strong>Artisan</strong> if you create handlooms and want to list crafts & use AI tools.
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="username" class="form-label fw-semibold">Username *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-at"></i></span>
+                <input type="text" class="form-control" id="username" name="username" placeholder="e.g. ramana_craft" required minlength="3">
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="full_name" class="form-label fw-semibold">Full Name *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" class="form-control" id="full_name" name="full_name" placeholder="e.g. S. Ramanaiah" required>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="email" class="form-label fw-semibold">Email Address *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@domain.com" required>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="phone" class="form-label fw-semibold">Mobile Phone *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                <input type="tel" class="form-control" id="phone" name="phone" placeholder="+91 98765 43210" required>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="password" class="form-label fw-semibold">Password *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                <input type="password" class="form-control" id="password" name="password" placeholder="At least 6 characters" required minlength="6">
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="confirm_password" class="form-label fw-semibold">Confirm Password *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Repeat password" required minlength="6">
+              </div>
+            </div>
+          </div>
+
+          <!-- Artisan Specific Additional Fields -->
+          <div id="artisanFields" class="mt-4 p-3 rounded-3 border border-warning" style="display: {% if role == 'artisan' %}block{% else %}none{% endif %}; background-color: #FFFDF9;">
+            <h6 class="fw-bold text-dark mb-3">
+              <i class="bi bi-palette2 text-warning me-2"></i> Artisan Heritage Details
+            </h6>
+
+            <div class="row g-3">
+              <div class="col-md-7">
+                <label for="artisan_cluster" class="form-label fw-semibold">Artisan Craft Cluster / Region</label>
+                <select name="artisan_cluster" id="artisan_cluster" class="form-select">
+                  <option value="Srikalahasti, Tirupati District">Srikalahasti (Pen Kalamkari, River Swarnamukhi)</option>
+                  <option value="Pedana, Krishna District">Pedana / Machilipatnam (Teakwood Block Kalamkari)</option>
+                  <option value="Polavaram, Krishna District">Polavaram (Heritage Natural Dye Cluster)</option>
+                  <option value="Karuppur, Thanjavur">Karuppur Kalamkari (Court Brocade Kalamkari)</option>
+                  <option value="Other Andhra Heritage Hub">Other Andhra Handloom Cluster</option>
+                </select>
+              </div>
+
+              <div class="col-md-5">
+                <label for="experience_years" class="form-label fw-semibold">Craft Experience</label>
+                <div class="input-group">
+                  <input type="number" class="form-control" id="experience_years" name="experience_years" value="5" min="1" max="70">
+                  <span class="input-group-text">Years</span>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="bio" class="form-label fw-semibold">Artisan Bio / Tradition Story</label>
+                <textarea class="form-control" id="bio" name="bio" rows="2" placeholder="Tell buyers about your family lineage, techniques, or special motifs..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <button type="submit" class="btn btn-kalamkari-primary btn-lg w-100">
+              <i class="bi bi-check2-circle me-1"></i> Complete Registration
+            </button>
+          </div>
+        </form>
+
+        <div class="text-center mt-4 pt-3 border-top">
+          <p class="mb-0 text-muted small">
+            Already have an account? <a href="{{ url_for('login') }}" class="text-primary fw-bold">Sign In here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

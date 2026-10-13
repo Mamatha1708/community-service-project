@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="48" height="48">
+  <!-- Two People / Artisan Community Icon in Teal -->
+  <g fill="#0D625D">
+    <!-- Left Person Head -->
+    <circle cx="24" cy="20" r="8"/>
+    <!-- Left Person Body -->
+    <path d="M12 46 C12 36 17 32 24 32 C31 32 36 36 36 46 Z"/>
+    
+    <!-- Right Person Head -->
+    <circle cx="42" cy="24" r="7"/>
+    <!-- Right Person Body -->
+    <path d="M33 46 C33 39 37 35 43 35 C49 35 53 39 53 46 Z" opacity="0.95"/>
+  </g>
+</svg>

@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders & Craft Tracking | Kalamkari Connect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+    <div>
+      <h1 class="font-heritage fw-bold text-dark mb-1">My Orders & Craft Tracking</h1>
+      <p class="text-muted small mb-0">Track your handcrafted orders directly from our rural artisan studios.</p>
+    </div>
+    <a href="{{ url_for('marketplace') }}" class="btn btn-outline-dark btn-sm">
+      <i class="bi bi-shop me-1"></i> Browse More Crafts
+    </a>
+  </div>
+
+  {% if orders %}
+    <div class="row g-4">
+      {% for order in orders %}
+        <div class="col-12">
+          <div class="card card-kalamkari border-0 shadow-sm p-4">
+            <!-- Order Header -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 border-bottom mb-3">
+              <div>
+                <span class="text-muted small">Order Reference:</span>
+                <span class="fw-bold fs-5 text-dark ms-1">#{{ order.order_number }}</span>
+                <span class="text-muted small ms-2">&bull; Placed on {{ order.created_at.strftime('%d %B %Y, %I:%M %p') }}</span>
+              </div>
+              <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+                <span class="small text-muted">Status:</span>
+                <span class="badge fs-6 px-3 py-2 {% if order.status == 'Delivered' %}bg-success{% elif order.status == 'Shipped' %}bg-info text-dark{% elif order.status == 'Processing' %}bg-warning text-dark{% elif order.status == 'Cancelled' %}bg-danger{% else %}bg-secondary{% endif %}">
+                  <i class="bi bi-circle-fill small me-1"></i> {{ order.status }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Status Progress Timeline Tracker -->
+            <div class="p-3 rounded-3 bg-light mb-4">
+              <div class="d-flex justify-content-between text-center small position-relative">
+                <div class="flex-grow-1">
+                  <i class="bi bi-receipt fs-4 text-success d-block mb-1"></i>
+                  <strong class="d-block text-success">Order Received</strong>
+                  <span class="text-muted" style="font-size: 0.72rem;">Artisan Notified</span>
+                </div>
+                <div class="flex-grow-1">
+                  <i class="bi bi-palette fs-4 {% if order.status in ['Processing', 'Shipped', 'Delivered'] %}text-warning{% else %}text-muted opacity-50{% endif %} d-block mb-1"></i>
+                  <strong class="d-block {% if order.status in ['Processing', 'Shipped', 'Delivered'] %}text-dark{% else %}text-muted{% endif %}">Artisan Curation</strong>
+                  <span class="text-muted" style="font-size: 0.72rem;">Inspection & Packing</span>
+                </div>
+                <div class="flex-grow-1">
+                  <i class="bi bi-truck fs-4 {% if order.status in ['Shipped', 'Delivered'] %}text-info{% else %}text-muted opacity-50{% endif %} d-block mb-1"></i>
+                  <strong class="d-block {% if order.status in ['Shipped', 'Delivered'] %}text-dark{% else %}text-muted{% endif %}">Eco-Transit</strong>
+                  <span class="text-muted" style="font-size: 0.72rem;">Dispatched</span>
+                </div>
+                <div class="flex-grow-1">
+                  <i class="bi bi-house-heart fs-4 {% if order.status == 'Delivered' %}text-success{% else %}text-muted opacity-50{% endif %} d-block mb-1"></i>
+                  <strong class="d-block {% if order.status == 'Delivered' %}text-success{% else %}text-muted{% endif %}">Delivered</strong>
+                  <span class="text-muted" style="font-size: 0.72rem;">Preserving Heritage</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Items List -->
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead class="table-light small">
+                  <tr>
+                    <th>Artisan Craft Piece</th>
+                    <th>Master Artisan</th>
+                    <th>Unit Price</th>
+                    <th>Qty</th>
+                    <th class="text-end">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in order.items %}
+                    <tr>
+                      <td class="fw-bold text-dark">
+                        {{ item.product_title }}
+                      </td>
+                      <td class="small text-muted">
+                        {{ item.artisan.full_name if item.artisan else 'Master Artisan' }}
+                      </td>
+                      <td class="small">₹{{ "{:,.0f}".format(item.price_at_purchase) }}</td>
+                      <td><span class="badge bg-secondary">{{ item.quantity }} pc</span></td>
+                      <td class="text-end fw-bold text-danger">₹{{ "{:,.0f}".format(item.subtotal) }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Order Footer Meta -->
+            <div class="row align-items-center pt-3 border-top mt-2 small text-muted">
+              <div class="col-md-7">
+                <i class="bi bi-geo-alt me-1 text-danger"></i> <strong>Shipping To:</strong>
+                {{ order.full_name }}, {{ order.shipping_address }}, {{ order.city }} - {{ order.pincode }}
+                &bull; Phone: {{ order.phone }}
+              </div>
+              <div class="col-md-5 text-md-end mt-2 mt-md-0">
+                <span class="text-muted">Payment: <strong>{{ order.payment_method }}</strong></span>
+                <span class="fs-5 fw-bold text-danger ms-3">Total: ₹{{ "{:,.0f}".format(order.total_amount) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card card-kalamkari border-0 text-center py-5 px-3">
+      <i class="bi bi-receipt display-2 text-muted mb-3"></i>
+      <h4>No orders found yet</h4>
+      <p class="text-muted small mb-4">
+        You haven't placed any demo orders yet. Explore our handcrafted collection in the marketplace!
+      </p>
+      <div>
+        <a href="{{ url_for('marketplace') }}" class="btn btn-kalamkari-primary btn-lg">
+          <i class="bi bi-shop me-1"></i> Visit Marketplace
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

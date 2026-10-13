@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Master Artisans | Kalamkari Connect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <span class="text-uppercase fw-bold text-danger small letter-spacing">Guardians of Living Heritage</span>
+    <h1 class="font-heritage fw-bold text-dark mt-2 mb-3">Our Master Artisans</h1>
+    <p class="text-muted max-w-700 mx-auto">
+      Meet the hereditary craftspeople of Srikalahasti and Machilipatnam preserving India's GI-tagged Kalamkari handlooms. Every purchase directly supports their families with 100% fair-trade compensation.
+    </p>
+  </div>
+
+  <div class="row g-4 justify-content-center">
+    {% for artisan in artisans %}
+      <div class="col-lg-6">
+        <div class="card card-kalamkari h-100 p-4 border-0 shadow-sm">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="fs-1 text-warning"><i class="bi bi-person-circle"></i></div>
+            <div>
+              <h4 class="font-heritage fw-bold text-dark mb-0">{{ artisan.full_name }}</h4>
+              <div class="small text-danger fw-semibold">
+                <i class="bi bi-geo-alt-fill me-1"></i> {{ artisan.artisan_cluster or 'Andhra Pradesh Craft Hub' }}
+              </div>
+            </div>
+          </div>
+
+          <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.65;">
+            {{ artisan.bio or 'Dedicated master craftsperson creating authentic hand-drawn and block-printed Kalamkari using century-old vegetable and mineral dye techniques.' }}
+          </p>
+
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
+            <span class="badge bg-light text-dark border">
+              <i class="bi bi-award me-1 text-warning"></i> {{ artisan.experience_years or 10 }}+ Years Experience
+            </span>
+            <a href="{{ url_for('marketplace') }}?q={{ artisan.full_name }}" class="btn btn-sm btn-kalamkari-primary">
+              View Handcrafted Pieces &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="mt-5 p-4 rounded-4 text-center text-white" style="background: linear-gradient(135deg, #543216, #D94A2B);">
+    <h4 class="font-heritage mb-2">Are you a hereditary Kalamkari craftsperson?</h4>
+    <p class="small mb-3 opacity-90 max-w-700 mx-auto">
+      Join Kalamkari Connect to showcase your authentic work directly to conscious art collectors worldwide with AI-powered storytelling support.
+    </p>
+    <a href="{{ url_for('register') }}?role=artisan" class="btn btn-light fw-bold text-dark px-4">
+      Register as an Artisan Partner
+    </a>
+  </div>
+</div>
+{% endblock %}

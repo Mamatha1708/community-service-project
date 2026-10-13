@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Authentic Kalamkari Marketplace | Kalamkari Connect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Marketplace Header -->
+  <div class="text-center mb-4">
+    <span class="text-uppercase fw-bold text-danger small letter-spacing">100% Handloom & Natural Vegetable Dyes</span>
+    <h1 class="font-heritage fw-bold text-dark mb-2">Artisan Handcrafted Gallery</h1>
+    <p class="text-muted max-w-700 mx-auto">
+      Acquire genuine GI-certified Kalamkari directly from rural master craftspeople in Andhra Pradesh.
+    </p>
+  </div>
+
+  <!-- Search and Filter Bar -->
+  <div class="card card-kalamkari border-0 shadow-sm p-4 mb-4">
+    <form action="{{ url_for('marketplace') }}" method="GET" class="row g-3">
+      <!-- Search Keyword -->
+      <div class="col-md-4">
+        <label for="q" class="form-label small fw-bold text-muted">Search Craft, Motif or Artisan</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" class="form-control" id="q" name="q" value="{{ query or '' }}" placeholder="e.g. Tree of Life, Saree, Indigo...">
+        </div>
+      </div>
+
+      <!-- Filter by Kalamkari Style -->
+      <div class="col-md-3 col-sm-6">
+        <label for="style" class="form-label small fw-bold text-muted">Kalamkari Style</label>
+        <select name="style" id="style" class="form-select">
+          <option value="">All Heritage Styles</option>
+          <option value="Srikalahasti Pen Kalamkari" {% if selected_style == 'Srikalahasti Pen Kalamkari' %}selected{% endif %}>Srikalahasti Pen Kalamkari</option>
+          <option value="Machilipatnam Block Kalamkari" {% if selected_style == 'Machilipatnam Block Kalamkari' %}selected{% endif %}>Machilipatnam Block Kalamkari</option>
+          <option value="Karuppur Kalamkari" {% if selected_style == 'Karuppur Kalamkari' %}selected{% endif %}>Karuppur Kalamkari</option>
+        </select>
+      </div>
+
+      <!-- Filter by Category -->
+      <div class="col-md-3 col-sm-6">
+        <label for="category" class="form-label small fw-bold text-muted">Craft Category</label>
+        <select name="category" id="category" class="form-select">
+          <option value="">All Categories</option>
+          <option value="Wall Hangings & Scrolls" {% if selected_category == 'Wall Hangings & Scrolls' %}selected{% endif %}>Wall Hangings & Scrolls</option>
+          <option value="Sarees" {% if selected_category == 'Sarees' %}selected{% endif %}>Sarees</option>
+          <option value="Dupattas & Shawls" {% if selected_category == 'Dupattas & Shawls' %}selected{% endif %}>Dupattas & Shawls</option>
+          <option value="Fabrics" {% if selected_category == 'Fabrics' %}selected{% endif %}>Fabrics & Yardage</option>
+          <option value="Home Decor" {% if selected_category == 'Home Decor' %}selected{% endif %}>Home Decor</option>
+        </select>
+      </div>
+
+      <!-- Sort By -->
+      <div class="col-md-2">
+        <label for="sort" class="form-label small fw-bold text-muted">Sort By</label>
+        <select name="sort" id="sort" class="form-select">
+          <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest</option>
+          <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+          <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+        </select>
+      </div>
+
+      <div class="col-12 d-flex justify-content-between align-items-center pt-2">
+        <div class="text-muted small">
+          Showing <strong>{{ products|length }}</strong> authentic artisanal creations
+        </div>
+        <div class="d-flex gap-2">
+          <a href="{{ url_for('marketplace') }}" class="btn btn-sm btn-outline-secondary">Clear Filters</a>
+          <button type="submit" class="btn btn-sm btn-kalamkari-indigo px-3">
+            <i class="bi bi-filter me-1"></i> Apply Filter
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Product Grid -->
+  {% if products %}
+    <div class="row g-4">
+      {% for product in products %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card card-kalamkari h-100 d-flex flex-column">
+            <!-- Product Image & Style Badge -->
+            <div class="position-relative">
+              <a href="{{ url_for('product_detail', product_id=product.id) }}">
+                <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.title }}">
+              </a>
+              <span class="badge bg-dark bg-opacity-75 position-absolute top-0 end-0 m-3 shadow-sm">
+                {{ product.kalamkari_style }}
+              </span>
+            </div>
+
+            <!-- Product Card Body -->
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex gap-2 mb-2 flex-wrap">
+                <span class="badge-kalamkari-motif">{{ product.motif_type }}</span>
+                <span class="badge-kalamkari-dye">{{ product.category }}</span>
+              </div>
+
+              <h5 class="card-title fw-bold mb-2">
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="text-decoration-none text-dark">
+                  {{ product.title }}
+                </a>
+              </h5>
+
+              <!-- Artisan Attribution -->
+              <p class="small text-muted mb-2">
+                <i class="bi bi-person-fill text-secondary me-1"></i> By <strong>{{ product.artisan.full_name }}</strong>
+                <span class="d-block text-secondary" style="font-size: 0.78rem;">
+                  <i class="bi bi-geo-alt me-1"></i> {{ product.artisan.artisan_cluster or 'Andhra Pradesh' }}
+                </span>
+              </p>
+
+              <p class="card-text text-muted small mb-3 flex-grow-1">
+                {{ product.description[:115] }}...
+              </p>
+
+              <!-- Card Bottom Action Area -->
+              <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-auto">
+                <div>
+                  <span class="text-muted small d-block">Direct Artisan Price</span>
+                  <span class="price-tag">₹{{ "{:,.0f}".format(product.price) }}</span>
+                </div>
+                <div class="d-flex gap-2">
+                  <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-sm btn-outline-dark">
+                    Details
+                  </a>
+                  {% if product.stock > 0 %}
+                    <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST">
+                      <button type="submit" class="btn btn-sm btn-kalamkari-primary" title="Add to Bag">
+                        <i class="bi bi-cart-plus me-1"></i> Add
+                      </button>
+                    </form>
+                  {% else %}
+                    <button class="btn btn-sm btn-secondary" disabled>Sold Out</button>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <!-- Empty State -->
+    <div class="card card-kalamkari border-0 text-center py-5 px-3">
+      <i class="bi bi-search display-3 text-muted mb-3"></i>
+      <h4>No crafts found matching your criteria</h4>
+      <p class="text-muted small mb-3">
+        Try broadening your search keywords or resetting the style and category filters.
+      </p>
+      <div>
+        <a href="{{ url_for('marketplace') }}" class="btn btn-kalamkari-indigo">
+          Reset All Filters
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

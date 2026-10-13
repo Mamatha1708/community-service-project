@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Kalamkari Mitra Voice Assistant | Telugu, Hindi & English{% endblock %}
+
+{% block extra_css %}
+<style>
+  .voice-chat-box {
+    height: 420px;
+    overflow-y: auto;
+    background-color: #FAF7F0;
+    border: 1px solid #EAE3D6;
+    border-radius: 16px;
+    padding: 1.25rem;
+  }
+  .pulse-animation {
+    animation: pulseMic 1.4s infinite;
+  }
+  @keyframes pulseMic {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+  }
+  .sample-pill-btn {
+    border-radius: 20px;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.85rem;
+    background-color: #ffffff;
+    border: 1px solid #D9CBB6;
+    color: #4A3323;
+    transition: all 0.2s ease;
+  }
+  .sample-pill-btn:hover {
+    background-color: #D94A2B;
+    color: #ffffff;
+    border-color: #D94A2B;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Header -->
+  <div class="text-center mb-4">
+    <span class="text-uppercase fw-bold text-danger small letter-spacing">Multilingual Heritage AI</span>
+    <h1 class="font-heritage fw-bold text-dark mt-2 mb-2" id="assistantTitle">{{ ui_strings.title }}</h1>
+    <p class="text-muted max-w-700 mx-auto" id="assistantSubtitle">
+      {{ ui_strings.subtitle }}
+    </p>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      <!-- Assistant Card -->
+      <div class="card card-kalamkari p-4 border-0 shadow-sm">
+        <!-- Control Header: Language Selector & Audio Controls -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pb-3 mb-3 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <label class="form-label mb-0 fw-semibold small text-dark" for="langSelector">
+              <i class="bi bi-translate text-danger me-1"></i> {{ ui_strings.language_label }}:
+            </label>
+            <select id="langSelector" class="form-select form-select-sm" style="width: auto;">
+              <option value="en-IN" {% if current_lang == 'en-IN' %}selected{% endif %}>English (India)</option>
+              <option value="te-IN" {% if current_lang == 'te-IN' %}selected{% endif %}>తెలుగు (Telugu - te-IN)</option>
+              <option value="hi-IN" {% if current_lang == 'hi-IN' %}selected{% endif %}>हिन्दी (Hindi - hi-IN)</option>
+            </select>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <span id="micStatusIndicator" class="badge bg-danger pulse-animation" style="display: none;">
+              ● Recording Audio
+            </span>
+            <button id="stopAudioBtn" class="btn btn-sm btn-outline-secondary" style="display: none;" title="Stop Voice Audio">
+              <i class="bi bi-volume-mute-fill me-1"></i> Stop Audio
+            </button>
+          </div>
+        </div>
+
+        <!-- Alert Notification Box -->
+        <div id="voiceAlertBox" style="display: none;"></div>
+
+        <!-- Interactive Chat Messages Container -->
+        <div class="voice-chat-box mb-3" id="chatMessagesContainer">
+          <!-- Initial Welcome Message from Assistant -->
+          <div class="d-flex mb-3 justify-content-start">
+            <div class="p-3 rounded-4 shadow-sm text-white" style="background: #543216; max-width: 80%;">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="small fw-bold opacity-75">🦚 Kalamkari Mitra</span>
+              </div>
+              <div class="message-content" style="line-height: 1.6;">
+                {% if current_lang == 'te-IN' %}
+                  నమస్కారం! నేను మీ కలంకారి మిత్ర సహాయకుడిని. మైక్రోఫోన్ ఉపయోగించి మాట్లాడండి లేదా క్రింద టైప్ చేయండి. మీరు నన్ను ధరల లెక్కలు, నెమలి డిజైన్లు లేదా ప్రభుత్వ పథకాల గురించి అడగవచ్చు.
+                {% elif current_lang == 'hi-IN' %}
+                  नमस्ते! मैं आपका कलमकारी मित्र सहायक हूँ। माइक पर बोलें या नीचे लिखें। आप मुझसे लागत, डिज़ाइन विचार, या सरकारी योजनाओं के बारे में पूछ सकते हैं।
+                {% else %}
+                  Namaste! I am your Kalamkari Mitra assistant. Speak using the microphone button or type below. Ask me how to calculate product prices, popular peacock motifs, or eligible government schemes.
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sample Quick Question Pills -->
+        <div class="mb-3">
+          <span class="small fw-semibold text-muted d-block mb-2">Try asking:</span>
+          <div class="d-flex flex-wrap gap-2" id="samplePillsContainer">
+            {% for q in ui_strings.sample_questions %}
+              <button type="button" class="sample-pill-btn" onclick="triggerSampleQuestion('{{ q|replace("'", "\\'") }}')">
+                <i class="bi bi-chat-quote me-1 text-danger"></i> {{ q }}
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Input & Speech Controls Bar -->
+        <div class="p-3 rounded-3 border" style="background: #FAF7F0;">
+          <div class="input-group mb-2">
+            <!-- Microphone Start / Stop Button -->
+            <button class="btn btn-outline-danger px-3" type="button" id="micToggleBtn">
+              <i class="bi bi-mic me-1"></i> {{ ui_strings.mic_start }}
+            </button>
+
+            <!-- Editable Text Box (receives recognised voice or typed input) -->
+            <input type="text" id="voiceInputBox" class="form-control" 
+                   placeholder="{{ ui_strings.input_placeholder }}" autocomplete="off">
+
+            <!-- Send Button -->
+            <button class="btn btn-kalamkari-primary px-4" type="button" id="voiceSendBtn">
+              <i class="bi bi-send-fill me-1"></i> {{ ui_strings.send_button }}
+            </button>
+          </div>
+          <div class="d-flex justify-content-between align-items-center small text-muted">
+            <span><i class="bi bi-info-circle me-1"></i> Microphones stop automatically when you pause speaking.</span>
+            <span>Works with Telugu, Hindi & English</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/voice_assistant.js') }}"></script>
+<script>
+let voiceAssistantInstance = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+  const initialStrings = {{ ui_strings|tojson }};
+  voiceAssistantInstance = new KalamkariVoiceAssistant({
+    language: '{{ current_lang }}',
+    uiStrings: initialStrings,
+    micBtnId: 'micToggleBtn',
+    micStatusId: 'micStatusIndicator',
+    inputBoxId: 'voiceInputBox',
+    sendBtnId: 'voiceSendBtn',
+    chatContainerId: 'chatMessagesContainer',
+    langSelectId: 'langSelector',
+    stopAudioBtnId: 'stopAudioBtn',
+    alertBoxId: 'voiceAlertBox'
+  });
+});
+
+function triggerSampleQuestion(question) {
+  if (voiceAssistantInstance) {
+    const input = document.getElementById('voiceInputBox');
+    if (input) input.value = question;
+    voiceAssistantInstance.sendQuery(question);
+  }
+}
+</script>
+{% endblock %}

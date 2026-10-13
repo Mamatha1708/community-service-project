@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit Craft Listing' if product else 'List New Handcrafted Piece' }} | Kalamkari Connect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-9 col-md-11">
+      <div class="card card-kalamkari border-0 shadow-lg p-4 p-md-5">
+        <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+          <div>
+            <h2 class="font-heritage fw-bold text-dark mb-1">
+              {{ 'Edit Kalamkari Craft Listing' if product else 'List New Kalamkari Craft' }}
+            </h2>
+            <p class="text-muted small mb-0">
+              Provide authentic craft details. Use our AI assistant to write engaging cultural narratives.
+            </p>
+          </div>
+          <a href="{{ url_for('artisan_dashboard') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back to Studio
+          </a>
+        </div>
+
+        <form action="{{ url_for('edit_product', product_id=product.id) if product else url_for('add_product') }}" method="POST" enctype="multipart/form-data" id="craftForm">
+          <div class="row g-4">
+            <!-- Product Title -->
+            <div class="col-12">
+              <label for="title" class="form-label fw-bold">Craft Piece Title *</label>
+              <input type="text" class="form-control form-control-lg" id="title" name="title" value="{{ product.title if product else (request.args.get('title') or '') }}" placeholder="e.g. Sacred Tree of Life Natural Indigo Wall Hanging" required>
+              <div class="form-text small">Give a descriptive title highlighting the main motif and technique.</div>
+            </div>
+
+            <!-- Kalamkari Style & Category -->
+            <div class="col-md-6">
+              <label for="kalamkari_style" class="form-label fw-bold">Kalamkari Craft Style *</label>
+              <select name="kalamkari_style" id="kalamkari_style" class="form-select" required>
+                <option value="Srikalahasti Pen Kalamkari" {% if product and product.kalamkari_style == 'Srikalahasti Pen Kalamkari' %}selected{% endif %}>
+                  Srikalahasti Pen Kalamkari (Bamboo Kalam, Freehand Drawing)
+                </option>
+                <option value="Machilipatnam Block Kalamkari" {% if product and product.kalamkari_style == 'Machilipatnam Block Kalamkari' %}selected{% endif %}>
+                  Machilipatnam Block Kalamkari (Carved Teakwood Blocks, Pedana)
+                </option>
+                <option value="Karuppur Kalamkari" {% if product and product.kalamkari_style == 'Karuppur Kalamkari' %}selected{% endif %}>
+                  Karuppur Kalamkari (Royal Brocade Kalamkari)
+                </option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="category" class="form-label fw-bold">Craft Category *</label>
+              <select name="category" id="category" class="form-select" required>
+                <option value="Wall Hangings & Scrolls" {% if product and product.category == 'Wall Hangings & Scrolls' %}selected{% endif %}>Wall Hangings & Scrolls</option>
+                <option value="Sarees" {% if product and product.category == 'Sarees' %}selected{% endif %}>Sarees (Tussar / Mangalagiri Silk & Cotton)</option>
+                <option value="Dupattas & Shawls" {% if product and product.category == 'Dupattas & Shawls' %}selected{% endif %}>Dupattas & Shawls</option>
+                <option value="Fabrics" {% if product and product.category == 'Fabrics' %}selected{% endif %}>Fabrics & Unstitched Yardage</option>
+                <option value="Home Decor" {% if product and product.category == 'Home Decor' %}selected{% endif %}>Home Decor & Cushion Covers</option>
+              </select>
+            </div>
+
+            <!-- Central Motif & Natural Dyes -->
+            <div class="col-md-6">
+              <label for="motif_type" class="form-label fw-bold">Central Motif Theme *</label>
+              <select name="motif_type" id="motif_type" class="form-select" required>
+                <option value="Tree of Life" {% if product and product.motif_type == 'Tree of Life' %}selected{% endif %}>Tree of Life (Kalpavriksha / Cosmic Tree)</option>
+                <option value="Peacock & Swan" {% if product and product.motif_type == 'Peacock & Swan' %}selected{% endif %}>Peacock & Swan (Mayur / Hamsa)</option>
+                <option value="Mythological & Epics" {% if product and product.motif_type == 'Mythological & Epics' %}selected{% endif %}>Mythological & Epics (Ramayana, Mahabharata)</option>
+                <option value="Floral & Paisley" {% if product and product.motif_type == 'Floral & Paisley' %}selected{% endif %}>Floral & Paisley (Mankolam, Botanical Vines)</option>
+                <option value="Lotus & Elephants" {% if product and product.motif_type == 'Lotus & Elephants' %}selected{% endif %}>Lotus & Elephants (Gaja Lakshmi)</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="natural_dyes" class="form-label fw-bold">Natural Dyes & Mordants Used</label>
+              <input type="text" class="form-control" id="natural_dyes" name="natural_dyes" value="{{ product.natural_dyes if product else 'Myrobalan, Natural Indigo, Madder root, Fermented Iron Jaggery' }}" placeholder="e.g. Kasinam, Madder root, Indigo cake">
+              <div class="form-text small">Explain the plant & mineral materials used for natural coloring.</div>
+            </div>
+
+            <!-- Pricing & Inventory -->
+            <div class="col-md-6">
+              <label for="price" class="form-label fw-bold">Artisan Price (₹ INR) *</label>
+              <div class="input-group">
+                <span class="input-group-text fw-bold">₹</span>
+                <input type="number" step="1" min="100" class="form-control" id="price" name="price" value="{{ product.price|int if product else (request.args.get('price')|int if request.args.get('price') else '2500') }}" required>
+              </div>
+              <div class="form-text small">100% of this amount goes directly to you.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="stock" class="form-label fw-bold">Units Available in Stock *</label>
+              <input type="number" min="0" max="100" class="form-control" id="stock" name="stock" value="{{ product.stock if product else '1' }}" required>
+              <div class="form-text small">Number of finished pieces currently ready for dispatch.</div>
+            </div>
+
+            <!-- Description with AI Assistant Integration -->
+            <div class="col-12">
+              <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+                <label for="description" class="form-label fw-bold mb-0">Craft Story & Description *</label>
+                <div class="d-flex align-items-center gap-2">
+                  <span id="aiInlineStatus"></span>
+                  <button type="button" class="btn btn-sm btn-kalamkari-gold" id="btnGenerateInlineAI">
+                    <i class="bi bi-stars me-1"></i> Generate Story with AI
+                  </button>
+                </div>
+              </div>
+              <textarea class="form-control" id="description" name="description" rows="6" placeholder="Describe the artisan process, spiritual or cultural significance of the motif, wash care instructions, etc..." required>{{ product.description if product else '' }}</textarea>
+              <div class="form-text small">
+                💡 <em>Click <strong>"Generate Story with AI"</strong> above to craft a compelling cultural story based on the title, style, and motif you selected!</em>
+              </div>
+            </div>
+
+            <!-- Product Image Upload -->
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Upload Craft Photograph</label>
+              <input type="file" class="form-control" id="productImageInput" name="product_image" accept=".png, .jpg, .jpeg, .webp">
+              <div class="form-text small">Accepted formats: PNG, JPG, JPEG, WEBP (Max 5MB).</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Current / Upload Preview</label>
+              <div class="image-preview-wrapper text-center">
+                {% if product and product.image_url %}
+                  <img src="{{ product.image_url }}" alt="Preview" id="productImagePreview" style="display: block;">
+                {% else %}
+                  <img src="" alt="Preview" id="productImagePreview" style="display: none;">
+                  <span class="text-muted small p-3" id="imagePlaceholderText">
+                    <i class="bi bi-image fs-1 d-block mb-1 text-secondary"></i>
+                    Upload an image or keep default craft pattern
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="col-12 pt-3 border-top d-flex gap-3 justify-content-end">
+              <a href="{{ url_for('artisan_dashboard') }}" class="btn btn-outline-secondary px-4">Cancel</a>
+              <button type="submit" class="btn btn-kalamkari-primary px-5 btn-lg">
+                <i class="bi bi-check-lg me-1"></i> {{ 'Save Changes' if product else 'Publish to Marketplace' }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

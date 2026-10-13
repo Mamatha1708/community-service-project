@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <radialGradient id="runner-bg" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#FCF9F3"/>
+      <stop offset="100%" stop-color="#EBE0CF"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#runner-bg)"/>
+
+  <!-- Ornate Border Frame -->
+  <rect x="25" y="25" width="550" height="550" fill="none" stroke="#A93C24" stroke-width="8"/>
+  <rect x="40" y="40" width="520" height="520" fill="none" stroke="#D4A017" stroke-width="3"/>
+  <rect x="50" y="50" width="500" height="500" fill="none" stroke="#1B365D" stroke-width="2" stroke-dasharray="14 7"/>
+
+  <!-- Procession Elephant Motif -->
+  <!-- Elephant Body -->
+  <path d="M 230 240 C 230 190 320 180 390 220 C 420 240 430 300 420 370 L 400 440 L 370 440 L 375 370 L 335 370 L 330 440 L 300 440 L 305 370 L 260 370 L 255 440 L 225 440 L 230 360 C 200 350 170 300 170 270 C 170 245 195 240 215 250 Z" fill="#1B365D"/>
+  
+  <!-- Elephant Trunk Raised Up (Auspicious Gaja) -->
+  <path d="M 185 270 C 160 280 140 240 145 200 C 150 170 175 165 185 185 C 190 200 175 220 180 240" fill="none" stroke="#1B365D" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="178" cy="180" r="8" fill="#D4A017"/> <!-- Lotus held in trunk tip -->
+  
+  <!-- Tusks -->
+  <path d="M 195 280 Q 180 295 165 295" stroke="#FFFDF7" stroke-width="5" stroke-linecap="round" fill="none"/>
+
+  <!-- Eye -->
+  <circle cx="215" cy="235" r="4" fill="#FFFDF7"/>
+  <circle cx="215" cy="235" r="2" fill="#2C2523"/>
+
+  <!-- Royal Ornate Howdah / Saddle Blanket (Jhool) -->
+  <path d="M 280 250 L 380 250 L 370 340 L 290 340 Z" fill="#A93C24"/>
+  <rect x="295" y="265" width="70" height="60" fill="#D4A017"/>
+  <circle cx="330" cy="295" r="14" fill="#FFFDF7"/>
+  <circle cx="330" cy="295" r="7" fill="#1B365D"/>
+  
+  <!-- Hanging Golden Tassels -->
+  <line x1="290" y1="340" x2="290" y2="355" stroke="#D4A017" stroke-width="3"/>
+  <line x1="310" y1="340" x2="310" y2="355" stroke="#D4A017" stroke-width="3"/>
+  <line x1="330" y1="340" x2="330" y2="355" stroke="#D4A017" stroke-width="3"/>
+  <line x1="350" y1="340" x2="350" y2="355" stroke="#D4A017" stroke-width="3"/>
+  <line x1="370" y1="340" x2="370" y2="355" stroke="#D4A017" stroke-width="3"/>
+
+  <!-- Sacred Water Lotus Pond Beneath -->
+  <path d="M120 455 Q300 440 480 455 L480 490 Q300 475 120 490 Z" fill="#A93C24" opacity="0.3"/>
+  <!-- Floating Lotus -->
+  <circle cx="160" cy="465" r="16" fill="#A93C24"/>
+  <circle cx="160" cy="465" r="8" fill="#D4A017"/>
+  <circle cx="440" cy="465" r="16" fill="#A93C24"/>
+  <circle cx="440" cy="465" r="8" fill="#D4A017"/>
+
+  <!-- Badge Label -->
+  <rect x="175" y="525" width="250" height="34" rx="17" fill="#1B365D"/>
+  <text x="300" y="547" fill="#FFFDF7" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" letter-spacing="1">ROYAL GAJA LOTUS RUNNER</text>
+</svg>

@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Handloom Cart & Demo Checkout | Kalamkari Connect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
+    <div>
+      <h1 class="font-heritage fw-bold text-dark mb-1">Your Handloom Bag</h1>
+      <p class="text-muted small mb-0">Direct support for rural artisan livelihoods in Andhra Pradesh.</p>
+    </div>
+    <a href="{{ url_for('marketplace') }}" class="btn btn-outline-dark btn-sm">
+      <i class="bi bi-arrow-left me-1"></i> Continue Browsing
+    </a>
+  </div>
+
+  {% if cart_items %}
+    <div class="row g-4">
+      <!-- Left Column: Cart Items List -->
+      <div class="col-lg-7">
+        <div class="card card-kalamkari border-0 shadow-sm p-4 mb-4">
+          <h5 class="fw-bold mb-3 text-dark">Selected Handcrafted Items ({{ cart_items|length }})</h5>
+
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead class="table-light small">
+                <tr>
+                  <th>Craft</th>
+                  <th>Price</th>
+                  <th style="width: 140px;">Quantity</th>
+                  <th>Subtotal</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in cart_items %}
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-3">
+                        <img src="{{ item.product.image_url }}" alt="{{ item.product.title }}" class="rounded border" style="width: 55px; height: 55px; object-fit: cover;">
+                        <div>
+                          <a href="{{ url_for('product_detail', product_id=item.product.id) }}" class="fw-bold text-dark text-decoration-none small d-block">
+                            {{ item.product.title }}
+                          </a>
+                          <span class="text-muted small" style="font-size: 0.75rem;">
+                            By {{ item.product.artisan.full_name }}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="small fw-semibold">₹{{ "{:,.0f}".format(item.product.price) }}</td>
+                    <td>
+                      <form action="{{ url_for('update_cart_quantity', item_id=item.id) }}" method="POST" class="d-flex gap-1 align-items-center">
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" class="form-control form-control-sm text-center" style="width: 60px;">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="Update Quantity">
+                          <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                      </form>
+                    </td>
+                    <td class="fw-bold text-danger">₹{{ "{:,.0f}".format(item.subtotal) }}</td>
+                    <td class="text-end">
+                      <form action="{{ url_for('remove_from_cart', item_id=item.id) }}" method="POST">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Remove Item">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Academic Project Demonstration Note -->
+        <div class="p-3 rounded-3 bg-light border border-warning small">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <i class="bi bi-info-circle-fill text-warning fs-5"></i>
+            <strong class="text-dark">College Community Service Project Notice</strong>
+          </div>
+          <p class="mb-0 text-muted">
+            This checkout simulates order placement for field testing and community demonstration. No real financial credit/debit card charge occurs. You can test order tracking instantly!
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Column: Demo Checkout & Order Summary -->
+      <div class="col-lg-5">
+        <div class="card card-kalamkari border-0 shadow-lg p-4">
+          <h5 class="fw-bold mb-3 text-dark">Demo Checkout & Shipping</h5>
+
+          <form action="{{ url_for('place_order') }}" method="POST">
+            <!-- Customer Shipping Info -->
+            <div class="mb-3">
+              <label for="full_name" class="form-label small fw-semibold">Recipient Full Name *</label>
+              <input type="text" class="form-control form-control-sm" id="full_name" name="full_name" value="{{ current_user.full_name if current_user else '' }}" placeholder="e.g. Ananya Sharma" required>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label for="email" class="form-label small fw-semibold">Email *</label>
+                <input type="email" class="form-control form-control-sm" id="email" name="email" value="{{ current_user.email if current_user else '' }}" placeholder="name@domain.com" required>
+              </div>
+              <div class="col-6">
+                <label for="phone" class="form-label small fw-semibold">Phone *</label>
+                <input type="tel" class="form-control form-control-sm" id="phone" name="phone" value="{{ current_user.phone if current_user else '' }}" placeholder="+91 98765..." required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="shipping_address" class="form-label small fw-semibold">Delivery Address *</label>
+              <textarea class="form-control form-control-sm" id="shipping_address" name="shipping_address" rows="2" placeholder="House/Flat No, Street, Landmark..." required>Heritage Enclave, Sector 4</textarea>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-7">
+                <label for="city" class="form-label small fw-semibold">City / Town *</label>
+                <input type="text" class="form-control form-control-sm" id="city" name="city" value="Vijayawada" required>
+              </div>
+              <div class="col-5">
+                <label for="pincode" class="form-label small fw-semibold">PIN Code *</label>
+                <input type="text" class="form-control form-control-sm" id="pincode" name="pincode" value="520010" required>
+              </div>
+            </div>
+
+            <!-- Demo Payment Mode Selector -->
+            <div class="mb-4">
+              <label class="form-label small fw-semibold">Simulated Payment Method (CSP Demo)</label>
+              <div class="form-check p-2 rounded border bg-light mb-2">
+                <input class="form-check-input ms-1" type="radio" name="payment_method" id="payCod" value="Cash on Delivery (Demo)" checked>
+                <label class="form-check-label ms-2 small fw-semibold" for="payCod">
+                  <i class="bi bi-cash-stack text-success me-1"></i> Cash on Delivery (Demo Simulation)
+                </label>
+              </div>
+              <div class="form-check p-2 rounded border bg-light mb-2">
+                <input class="form-check-input ms-1" type="radio" name="payment_method" id="payUpi" value="Demo UPI Transfer">
+                <label class="form-check-label ms-2 small fw-semibold" for="payUpi">
+                  <i class="bi bi-qr-code-scan text-primary me-1"></i> Demo UPI Simulation (GPay / PhonePe)
+                </label>
+              </div>
+            </div>
+
+            <!-- Bill Breakdown -->
+            <div class="p-3 rounded-3 bg-light mb-4">
+              <div class="d-flex justify-content-between small text-muted mb-2">
+                <span>Handloom Subtotal:</span>
+                <span>₹{{ "{:,.0f}".format(total_amount) }}</span>
+              </div>
+              <div class="d-flex justify-content-between small text-muted mb-2">
+                <span>Eco-Friendly Fabric Packaging:</span>
+                <span class="text-success fw-bold">FREE</span>
+              </div>
+              <div class="d-flex justify-content-between small text-muted mb-2">
+                <span>Direct Artisan Dispatch:</span>
+                <span class="text-success fw-bold">FREE</span>
+              </div>
+              <hr class="my-2">
+              <div class="d-flex justify-content-between fw-bold fs-5 text-dark">
+                <span>Total Amount:</span>
+                <span class="text-danger">₹{{ "{:,.0f}".format(total_amount) }}</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-kalamkari-primary btn-lg w-100 fw-bold">
+              <i class="bi bi-shield-check me-2"></i> Confirm Demo Order
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <!-- Empty Cart -->
+    <div class="card card-kalamkari border-0 text-center py-5 px-3">
+      <i class="bi bi-bag-heart display-1 text-muted mb-3"></i>
+      <h4>Your Handloom Bag is currently empty</h4>
+      <p class="text-muted small mb-4">
+        Discover hand-painted temple scrolls, authentic silk sarees, and natural indigo block yardage.
+      </p>
+      <div>
+        <a href="{{ url_for('marketplace') }}" class="btn btn-kalamkari-primary btn-lg px-4">
+          <i class="bi bi-shop me-1"></i> Explore Kalamkari Marketplace
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

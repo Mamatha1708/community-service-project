@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Trending Kalamkari Design Recommender | Kalamkari Connect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Header -->
+  <div class="text-center mb-5">
+    <span class="text-uppercase fw-bold text-danger small letter-spacing">Heritage Motif Insights</span>
+    <h1 class="font-heritage fw-bold text-dark mt-2 mb-3">Trending Kalamkari Design Recommender</h1>
+    <p class="text-muted max-w-700 mx-auto">
+      Discover curated design inspirations, traditional iconography, and organic vegetable-dye colour pairings tailored to your craft format.
+    </p>
+  </div>
+
+  <!-- Disclaimer Notice -->
+  <div class="alert alert-info border-0 shadow-sm d-flex align-items-center gap-3 mb-4 rounded-3" role="alert">
+    <i class="bi bi-info-circle-fill fs-4 text-primary"></i>
+    <div class="small">
+      <strong>Artisan Notice:</strong> The recommendations below are curated handloom design suggestions based on traditional iconography and seasonal handcraft aesthetics, not verified real-time e-commerce sales metrics.
+    </div>
+  </div>
+
+  <!-- Filter Controls -->
+  <div class="card card-kalamkari p-4 border-0 shadow-sm mb-5">
+    <form method="GET" action="{{ url_for('trending_designs') }}" id="designFilterForm">
+      <div class="row g-3 align-items-end">
+        <!-- Product Type -->
+        <div class="col-md-3 col-sm-6">
+          <label class="form-label fw-semibold small text-dark">Product Format</label>
+          <select name="product_type" class="form-select form-select-sm">
+            <option value="all" {% if filters.product_type == 'all' %}selected{% endif %}>All Formats</option>
+            <option value="saree" {% if filters.product_type == 'saree' %}selected{% endif %}>Handloom Saree</option>
+            <option value="dupatta" {% if filters.product_type == 'dupatta' %}selected{% endif %}>Dupatta & Stole</option>
+            <option value="dress_material" {% if filters.product_type == 'dress_material' %}selected{% endif %}>Dress Material / Fabric</option>
+            <option value="home_decor" {% if filters.product_type == 'home_decor' %}selected{% endif %}>Home Décor & Scrolls</option>
+            <option value="other" {% if filters.product_type == 'other' %}selected{% endif %}>Accessories & Other</option>
+          </select>
+        </div>
+
+        <!-- Motif -->
+        <div class="col-md-3 col-sm-6">
+          <label class="form-label fw-semibold small text-dark">Motif Theme</label>
+          <select name="motif" class="form-select form-select-sm">
+            <option value="all" {% if filters.motif == 'all' %}selected{% endif %}>All Motifs</option>
+            <option value="peacock" {% if filters.motif == 'peacock' %}selected{% endif %}>Peacock (Mayura)</option>
+            <option value="birds" {% if filters.motif == 'birds' %}selected{% endif %}>Birds & Hamsa (Swan)</option>
+            <option value="floral" {% if filters.motif == 'floral' %}selected{% endif %}>Floral Vines & Lotus</option>
+            <option value="nature" {% if filters.motif == 'nature' %}selected{% endif %}>Nature & Tree of Life</option>
+            <option value="mythology" {% if filters.motif == 'mythology' %}selected{% endif %}>Mythology & Epics</option>
+            <option value="geometric" {% if filters.motif == 'geometric' %}selected{% endif %}>Geometric Mandalas</option>
+          </select>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="col-md-2 col-sm-6">
+          <label class="form-label fw-semibold small text-dark">Dye Colour</label>
+          <select name="color" class="form-select form-select-sm">
+            <option value="all" {% if filters.color == 'all' %}selected{% endif %}>All Colours</option>
+            <option value="indigo_blue" {% if filters.color == 'indigo_blue' %}selected{% endif %}>Indigo Blue</option>
+            <option value="terracotta_red" {% if filters.color == 'terracotta_red' %}selected{% endif %}>Terracotta Red</option>
+            <option value="mustard_yellow" {% if filters.color == 'mustard_yellow' %}selected{% endif %}>Mustard Yellow</option>
+            <option value="earthy_black" {% if filters.color == 'earthy_black' %}selected{% endif %}>Earthy Black (Kasinam)</option>
+            <option value="sage_green" {% if filters.color == 'sage_green' %}selected{% endif %}>Sage Green</option>
+            <option value="cream" {% if filters.color == 'cream' %}selected{% endif %}>Cream / Ecru</option>
+          </select>
+        </div>
+
+        <!-- Style -->
+        <div class="col-md-2 col-sm-6">
+          <label class="form-label fw-semibold small text-dark">Style</label>
+          <select name="style" class="form-select form-select-sm">
+            <option value="all" {% if filters.style == 'all' %}selected{% endif %}>All Styles</option>
+            <option value="traditional" {% if filters.style == 'traditional' %}selected{% endif %}>Traditional Heritage</option>
+            <option value="contemporary" {% if filters.style == 'contemporary' %}selected{% endif %}>Contemporary Fusion</option>
+          </select>
+        </div>
+
+        <!-- Submit & Reset Buttons -->
+        <div class="col-md-2 col-sm-12 d-flex gap-2">
+          <button type="submit" class="btn btn-kalamkari-primary btn-sm flex-grow-1 py-2">
+            <i class="bi bi-funnel-fill me-1"></i> Filter
+          </button>
+          <a href="{{ url_for('trending_designs') }}" class="btn btn-outline-secondary btn-sm py-2" title="Reset Filters">
+            <i class="bi bi-arrow-counterclockwise"></i>
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Design Recommendations Grid -->
+  <div class="row g-4" id="designsContainer">
+    {% for d in designs %}
+      <div class="col-lg-4 col-md-6">
+        <div class="card card-kalamkari h-100 border-0 shadow-sm d-flex flex-column">
+          <!-- Card Image & Badge Overlay -->
+          <div class="position-relative overflow-hidden bg-light text-center" style="height: 220px;">
+            <img src="{{ d.image }}" alt="{{ d.title }}" class="w-100 h-100 object-fit-cover">
+            <span class="position-absolute top-2 start-2 badge bg-dark bg-opacity-75">
+              {{ d.kalamkari_school }}
+            </span>
+            <span class="position-absolute top-2 end-2 badge bg-warning text-dark fw-bold">
+              Match: {{ d.match_score }}%
+            </span>
+          </div>
+
+          <div class="card-body p-4 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="text-danger small fw-bold text-uppercase">{{ d.product_type|replace('_', ' ') }}</span>
+              <span class="badge bg-light text-muted border small">{{ d.style|capitalize }}</span>
+            </div>
+
+            <h5 class="card-title font-heritage fw-bold text-dark mb-2">{{ d.title }}</h5>
+
+            <p class="card-text text-muted small flex-grow-1" style="line-height: 1.6;">
+              {{ d.description }}
+            </p>
+
+            <!-- Match Reason Callout -->
+            <div class="p-2 rounded bg-light border-start border-3 border-success mb-3 small text-muted">
+              <strong class="text-success"><i class="bi bi-check2-circle me-1"></i>Why it matches:</strong><br>
+              {{ d.match_reason }}
+            </div>
+
+            <div class="small mb-3">
+              <div class="text-muted"><i class="bi bi-palette me-1 text-danger"></i><strong>Palette:</strong> {{ d.color_palette }}</div>
+              <div class="text-muted mt-1"><i class="bi bi-droplet-half me-1 text-info"></i><strong>Dyes:</strong> {{ d.dyes_used }}</div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto gap-2">
+              <!-- Bookmark Button -->
+              <button type="button" 
+                      class="btn btn-sm btn-outline-secondary bookmark-btn {% if d.id in saved_design_ids %}active bg-warning-subtle text-dark border-warning{% endif %}" 
+                      data-id="{{ d.id }}">
+                <i class="bi {% if d.id in saved_design_ids %}bi-bookmark-heart-fill text-danger{% else %}bi-bookmark-heart{% endif %} me-1"></i>
+                <span class="btn-text">{% if d.id in saved_design_ids %}Saved{% else %}Save Idea{% endif %}</span>
+              </button>
+
+              <!-- Use in Product Form Button -->
+              {% if current_user and (current_user.is_artisan or current_user.is_admin) %}
+                <a href="{{ url_for('add_product') }}?title={{ d.title|urlencode }}&motif={{ d.motif|capitalize|urlencode }}&style={{ d.kalamkari_school|urlencode }}" 
+                   class="btn btn-sm btn-kalamkari-primary" 
+                   title="Pre-fill listing with this idea">
+                  <i class="bi bi-brush me-1"></i> Use Idea
+                </a>
+              {% else %}
+                <a href="{{ url_for('login') }}?next={{ url_for('trending_designs') }}" 
+                   class="btn btn-sm btn-outline-primary"
+                   title="Sign in as an artisan to list this craft">
+                  <i class="bi bi-box-arrow-in-right me-1"></i> List Craft
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if not designs %}
+    <div class="text-center py-5">
+      <i class="bi bi-palette-fill display-3 text-muted mb-3"></i>
+      <h5>No matching design ideas found</h5>
+      <p class="text-muted">Try clearing some filters to see broader traditional Kalamkari inspirations.</p>
+      <a href="{{ url_for('trending_designs') }}" class="btn btn-outline-dark">Reset All Filters</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const bookmarkButtons = document.querySelectorAll('.bookmark-btn');
+
+  bookmarkButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const designId = this.getAttribute('data-id');
+      const icon = this.querySelector('i');
+      const text = this.querySelector('.btn-text');
+
+      fetch('/api/trending-designs/bookmark', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ design_id: designId })
+      })
+      .then(r => r.json())
+      .then(resp => {
+        if (resp.success) {
+          if (resp.bookmarked) {
+            btn.classList.add('active', 'bg-warning-subtle', 'text-dark', 'border-warning');
+            icon.className = 'bi bi-bookmark-heart-fill text-danger me-1';
+            text.textContent = 'Saved';
+          } else {
+            btn.classList.remove('active', 'bg-warning-subtle', 'text-dark', 'border-warning');
+            icon.className = 'bi bi-bookmark-heart me-1';
+            text.textContent = 'Save Idea';
+          }
+        }
+      })
+      .catch(err => console.error(err));
+    });
+  });
+});
+</script>
+{% endblock %}

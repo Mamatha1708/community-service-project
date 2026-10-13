@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Artisan Studio Dashboard | Kalamkari Connect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Top Welcome Banner -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center bg-white p-4 rounded-4 shadow-sm border mb-4">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <h2 class="font-heritage fw-bold mb-0 text-dark">Welcome, {{ current_user.full_name }}</h2>
+        <span class="badge bg-warning text-dark"><i class="bi bi-patch-check-fill me-1"></i> Verified Artisan</span>
+      </div>
+      <p class="text-muted small mb-0">
+        <i class="bi bi-geo-alt-fill text-danger me-1"></i> Craft Hub: <strong>{{ current_user.artisan_cluster or 'Andhra Pradesh Craft Cluster' }}</strong>
+        &bull; Experience: <strong>{{ current_user.experience_years or 5 }}+ Years</strong>
+      </p>
+    </div>
+    <div class="d-flex gap-2 mt-3 mt-md-0">
+      <a href="{{ url_for('ai_assistant') }}" class="btn btn-outline-dark">
+        <i class="bi bi-stars text-warning me-1"></i> AI Artisan Assistant
+      </a>
+      <a href="{{ url_for('add_product') }}" class="btn btn-kalamkari-primary">
+        <i class="bi bi-plus-lg me-1"></i> List New Craft
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI Tiles -->
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card">
+        <span class="text-muted small text-uppercase fw-semibold">Active Crafts Listed</span>
+        <div class="stat-number">{{ products|length }}</div>
+        <span class="small text-success"><i class="bi bi-bag-check me-1"></i> Active in Marketplace</span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card terracotta">
+        <span class="text-muted small text-uppercase fw-semibold">Total Stock Units</span>
+        <div class="stat-number">{{ total_stock }}</div>
+        <span class="small text-muted"><i class="bi bi-boxes me-1"></i> Handloom pieces available</span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card gold">
+        <span class="text-muted small text-uppercase fw-semibold">Customer Orders</span>
+        <div class="stat-number">{{ order_items|length }}</div>
+        <span class="small text-primary"><i class="bi bi-truck me-1"></i> Direct buyer inquiries</span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card">
+        <span class="text-muted small text-uppercase fw-semibold">Gross Craft Revenue</span>
+        <div class="stat-number">₹{{ "{:,.0f}".format(total_revenue) }}</div>
+        <span class="small text-success"><i class="bi bi-check2 me-1"></i> 100% fair artisan price</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabbed Content: 1. My Listed Products, 2. Buyer Orders -->
+  <div class="card card-kalamkari border-0 shadow-sm p-4">
+    <ul class="nav nav-pills mb-4 border-bottom pb-3" id="artisanTabs" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active fw-bold" id="products-tab" data-bs-toggle="tab" data-bs-target="#tab-products" type="button">
+          <i class="bi bi-palette me-1"></i> My Listed Crafts ({{ products|length }})
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold" id="orders-tab" data-bs-toggle="tab" data-bs-target="#tab-orders" type="button">
+          <i class="bi bi-receipt me-1"></i> Buyer Orders & Inquiries ({{ order_items|length }})
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="artisanTabsContent">
+      <!-- Tab 1: Products Management -->
+      <div class="tab-pane fade show active" id="tab-products">
+        {% if products %}
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col" style="width: 80px;">Preview</th>
+                  <th scope="col">Craft Title & Style</th>
+                  <th scope="col">Category & Motif</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Stock</th>
+                  <th scope="col" class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in products %}
+                  <tr>
+                    <td>
+                      <img src="{{ product.image_url }}" alt="{{ product.title }}" class="rounded border" style="width: 60px; height: 60px; object-fit: cover;">
+                    </td>
+                    <td>
+                      <div class="fw-bold text-dark">{{ product.title }}</div>
+                      <span class="badge-kalamkari-style small">{{ product.kalamkari_style }}</span>
+                    </td>
+                    <td>
+                      <div class="small fw-semibold">{{ product.category }}</div>
+                      <span class="badge-kalamkari-motif small">{{ product.motif_type }}</span>
+                    </td>
+                    <td class="fw-bold text-danger">₹{{ "{:,.0f}".format(product.price) }}</td>
+                    <td>
+                      {% if product.stock > 0 %}
+                        <span class="badge bg-success">{{ product.stock }} in stock</span>
+                      {% else %}
+                        <span class="badge bg-danger">Sold Out</span>
+                      {% endif %}
+                    </td>
+                    <td class="text-end">
+                      <div class="btn-group">
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-sm btn-outline-secondary" title="View in Marketplace">
+                          <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-sm btn-outline-primary" title="Edit Craft">
+                          <i class="bi bi-pencil"></i>
+                        </a>
+                        <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST" class="d-inline">
+                          <button type="submit" class="btn btn-sm btn-outline-danger btn-confirm-delete" title="Delete Craft">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <i class="bi bi-palette text-muted display-4 mb-3 d-block"></i>
+            <h5>No crafts listed in your studio yet</h5>
+            <p class="text-muted small">Share your handloom creations with art collectors across India.</p>
+            <a href="{{ url_for('add_product') }}" class="btn btn-kalamkari-primary mt-2">
+              <i class="bi bi-plus-lg me-1"></i> List Your First Kalamkari Craft
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Tab 2: Orders Management for this Artisan -->
+      <div class="tab-pane fade" id="tab-orders">
+        {% if order_items %}
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Order Ref</th>
+                  <th>Craft Ordered</th>
+                  <th>Quantity</th>
+                  <th>Amount</th>
+                  <th>Buyer Info</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in order_items %}
+                  <tr>
+                    <td><code>{{ item.order.order_number }}</code></td>
+                    <td class="fw-bold">{{ item.product_title }}</td>
+                    <td><span class="badge bg-secondary">{{ item.quantity }} pc</span></td>
+                    <td class="fw-bold text-success">₹{{ "{:,.0f}".format(item.subtotal) }}</td>
+                    <td>
+                      <div class="small fw-semibold">{{ item.order.full_name }}</div>
+                      <div class="text-muted small">{{ item.order.city }} ({{ item.order.phone }})</div>
+                    </td>
+                    <td>
+                      <span class="badge {% if item.order.status == 'Delivered' %}bg-success{% elif item.order.status == 'Shipped' %}bg-info text-dark{% elif item.order.status == 'Processing' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                        {{ item.order.status }}
+                      </span>
+                    </td>
+                    <td class="small text-muted">{{ item.order.created_at.strftime('%d %b %Y') }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <i class="bi bi-box-seam text-muted display-4 mb-3 d-block"></i>
+            <h5>No buyer orders received yet</h5>
+            <p class="text-muted small">Once customers place demo orders for your pieces, they will appear here with customer contact details.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

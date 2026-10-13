@@ -1,0 +1,428 @@
+{% extends "base.html" %}
+
+{% block title %}Kalamkari Mitra | AI Artisan Assistant & Craft Consultant{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- AI Header & Status Badge -->
+  <div class="ai-badge-banner mb-4">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-8">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="fs-3">✨</span>
+          <h2 class="font-heritage fw-bold mb-0 text-white">Kalamkari Mitra AI Assistant</h2>
+        </div>
+        <p class="mb-0 text-light opacity-90 small">
+          An AI assistant tailored to empower rural handloom artisans with authentic storytelling, digital marketing, and intelligent customer recommendations.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        {% if is_api_configured %}
+          <span class="badge bg-success fs-6 py-2 px-3 shadow-sm">
+            <i class="bi bi-cloud-check-fill me-1"></i> Google Gemini Live API Active
+          </span>
+        {% else %}
+          <div class="text-lg-end">
+            <span class="badge bg-warning text-dark fs-6 py-2 px-3 shadow-sm mb-1 d-inline-block">
+              <i class="bi bi-cpu-fill me-1"></i> Smart Offline Demo Engine Active
+            </span>
+            <div class="small text-light opacity-75">
+              <a href="#apiKeyInfo" class="text-warning text-decoration-underline" data-bs-toggle="collapse">
+                How to enable Gemini API?
+              </a>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Collapsible API Key Help Guide -->
+  <div class="collapse mb-4" id="apiKeyInfo">
+    <div class="card card-kalamkari border-0 shadow-sm p-4 bg-white">
+      <h6 class="fw-bold text-dark mb-2">
+        <i class="bi bi-key-fill text-warning me-1"></i> Enabling Google Gemini Live AI (Optional)
+      </h6>
+      <p class="small text-muted mb-2">
+        By default, Kalamkari Connect runs with a <strong>built-in Offline Knowledge Engine</strong> pre-programmed with Srikalahasti & Machilipatnam craft traditions.
+      </p>
+      <div class="p-3 bg-light rounded border small">
+        <p class="mb-1">To switch from Demo Engine to Live Google Gemini API:</p>
+        <ol class="mb-2 ps-3">
+          <li>Get a free Google Gemini API key from <a href="https://aistudio.google.com/" target="_blank" rel="noopener">Google AI Studio</a>.</li>
+          <li>Open the <code>.env</code> file in the project directory.</li>
+          <li>Add your key: <code>GEMINI_API_KEY=your_actual_key_here</code></li>
+          <li>Restart Flask! The app will automatically detect your key and switch modes.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main AI Tool Tabs -->
+  <div class="card card-kalamkari border-0 shadow-lg p-4">
+    <ul class="nav nav-pills mb-4 border-bottom pb-3" id="aiToolTabs" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active fw-bold" id="story-tab" data-bs-toggle="tab" data-bs-target="#tab-story" type="button">
+          <i class="bi bi-journal-text me-1"></i> 1. Product Story & Description
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold" id="marketing-tab" data-bs-toggle="tab" data-bs-target="#tab-marketing" type="button">
+          <i class="bi bi-megaphone me-1"></i> 2. Social Media Marketing
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link fw-bold" id="consultant-tab" data-bs-toggle="tab" data-bs-target="#tab-consultant" type="button">
+          <i class="bi bi-compass me-1"></i> 3. Heritage Buyer Consultant
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="aiToolTabsContent">
+      <!-- Tab 1: Product Storyteller -->
+      <div class="tab-pane fade show active" id="tab-story">
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <h5 class="fw-bold text-dark mb-2">Craft Details</h5>
+            <p class="text-muted small mb-3">Provide the core specs; AI will write an authentic heritage story.</p>
+
+            <form id="formProductStory">
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Product Title *</label>
+                <input type="text" class="form-control" id="storyTitle" value="Hand-Drawn Tree of Life Temple Scroll" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Kalamkari Style</label>
+                <select class="form-select" id="storyStyle">
+                  <option value="Srikalahasti Pen Kalamkari">Srikalahasti Pen Kalamkari (Bamboo Kalam, Freehand)</option>
+                  <option value="Machilipatnam Block Kalamkari">Machilipatnam Block Kalamkari (Carved Teakwood)</option>
+                  <option value="Karuppur Kalamkari">Karuppur Kalamkari (Royal Brocade)</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Central Motif Theme</label>
+                <select class="form-select" id="storyMotif">
+                  <option value="Tree of Life">Tree of Life (Kalpavriksha)</option>
+                  <option value="Peacock & Swan">Peacock & Swan (Mayur / Hamsa)</option>
+                  <option value="Mythological & Epics">Mythological & Epics (Ramayana)</option>
+                  <option value="Floral & Paisley">Floral & Paisley (Mankolam)</option>
+                  <option value="Lotus & Elephants">Lotus & Elephants (Gaja)</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Category</label>
+                <select class="form-select" id="storyCategory">
+                  <option value="Wall Hangings & Scrolls">Wall Hangings & Scrolls</option>
+                  <option value="Sarees">Sarees</option>
+                  <option value="Dupattas & Shawls">Dupattas & Shawls</option>
+                  <option value="Home Decor">Home Decor</option>
+                </select>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label small fw-bold">Natural Dyes & Special Notes</label>
+                <input type="text" class="form-control" id="storyDyes" value="Fermented iron jaggery kasinam, natural indigo, madder root">
+              </div>
+
+              <button type="submit" class="btn btn-kalamkari-primary w-100 py-2 fw-bold" id="btnSubmitStory">
+                <i class="bi bi-stars me-1"></i> Generate Heritage Story
+              </button>
+            </form>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="fw-bold text-dark mb-0">Generated Narrative</h5>
+              <button class="btn btn-sm btn-outline-secondary btn-copy-clipboard" data-target="storyOutputArea">
+                <i class="bi bi-clipboard me-1"></i> Copy Story
+              </button>
+            </div>
+
+            <div class="p-3 bg-light rounded-3 border" style="min-height: 380px;">
+              <div id="storyStatusBanner" class="small mb-2 text-muted">Click "Generate Heritage Story" to begin.</div>
+              <div id="storyOutputArea" class="small text-secondary" style="white-space: pre-line; line-height: 1.7;">
+Craft storytelling will appear here. The AI will weave together the spiritual meaning of your chosen motif, the chemical alchemy of vegetable mordants, and styling advice for modern buyers.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Marketing & Social Media Generator -->
+      <div class="tab-pane fade" id="tab-marketing">
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <h5 class="fw-bold text-dark mb-2">Campaign Parameters</h5>
+            <p class="text-muted small mb-3">Create ready-to-share social media content with trending handloom tags.</p>
+
+            <form id="formMarketing">
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Craft Name *</label>
+                <input type="text" class="form-control" id="mktTitle" value="Dancing Peacock Pure Tussar Silk Saree" required>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label small fw-bold">Craft Style</label>
+                  <select class="form-select form-select-sm" id="mktStyle">
+                    <option value="Srikalahasti Pen Kalamkari">Srikalahasti Pen Kalamkari</option>
+                    <option value="Machilipatnam Block Kalamkari">Machilipatnam Block Kalamkari</option>
+                  </select>
+                </div>
+                <div class="col-6">
+                  <label class="form-label small fw-bold">Category</label>
+                  <select class="form-select form-select-sm" id="mktCategory">
+                    <option value="Sarees">Sarees</option>
+                    <option value="Wall Hangings">Wall Hangings</option>
+                    <option value="Dupattas">Dupattas</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Artisan Price (₹)</label>
+                <input type="number" class="form-control" id="mktPrice" value="8200" required>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label small fw-bold">Special Campaign Note / Discount</label>
+                <input type="text" class="form-control" id="mktNotes" value="Direct from weaver, free eco packaging, handloom festival">
+              </div>
+
+              <button type="submit" class="btn btn-kalamkari-indigo w-100 py-2 fw-bold" id="btnSubmitMarketing">
+                <i class="bi bi-megaphone me-1"></i> Generate Social Media Pack
+              </button>
+            </form>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="fw-bold text-dark mb-0">Multi-Channel Marketing Copy</h5>
+              <button class="btn btn-sm btn-outline-secondary btn-copy-clipboard" data-target="mktOutputArea">
+                <i class="bi bi-clipboard me-1"></i> Copy Captions
+              </button>
+            </div>
+
+            <div class="p-3 bg-light rounded-3 border" style="min-height: 380px;">
+              <div id="mktStatusBanner" class="small mb-2 text-muted">Click "Generate Social Media Pack" to prepare posts.</div>
+              <div id="mktOutputArea" class="small text-secondary" style="white-space: pre-line; line-height: 1.7;">
+Ready-to-post Instagram captions, WhatsApp broadcast templates, and Facebook heritage community updates will be generated here.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Heritage Consultant & Buyer Style Recommender -->
+      <div class="tab-pane fade" id="tab-consultant">
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <h5 class="fw-bold text-dark mb-2">Buyer Style Advisory</h5>
+            <p class="text-muted small mb-3">
+              Describe your space, event, or gift requirement. AI will recommend appropriate Kalamkari styles and motifs.
+            </p>
+
+            <form id="formConsultant">
+              <div class="mb-3">
+                <label class="form-label small fw-bold">What are you looking for? *</label>
+                <textarea class="form-control" id="consultantQuery" rows="3" placeholder="e.g. Traditional wedding gift for sister, or a statement wall hanging for my living room with teakwood furniture..." required>I need an authentic artwork for my modern living room focal wall that brings peace and auspicious energy.</textarea>
+              </div>
+
+              <!-- Quick Prompt Buttons -->
+              <div class="mb-4">
+                <span class="small fw-bold text-muted d-block mb-1">Quick Suggestions:</span>
+                <div class="d-flex flex-wrap gap-1">
+                  <button type="button" class="btn btn-xs btn-outline-secondary quick-prompt" data-query="Statement wall decor for living room with wooden furniture">🏠 Living Room Decor</button>
+                  <button type="button" class="btn btn-xs btn-outline-secondary quick-prompt" data-query="Traditional South Indian wedding gift for bride with auspicious motifs">👰 Wedding Gift</button>
+                  <button type="button" class="btn btn-xs btn-outline-secondary quick-prompt" data-query="Lightweight breathable cotton dupatta for everyday office wear">🥻 Daily Workwear</button>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-kalamkari-gold w-100 py-2 fw-bold" id="btnSubmitConsultant">
+                <i class="bi bi-compass me-1"></i> Get Heritage Advice
+              </button>
+            </form>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="fw-bold text-dark mb-0">Craft Recommendation</h5>
+              <button class="btn btn-sm btn-outline-secondary btn-copy-clipboard" data-target="consultantOutputArea">
+                <i class="bi bi-clipboard me-1"></i> Copy Advice
+              </button>
+            </div>
+
+            <div class="p-3 bg-light rounded-3 border" style="min-height: 380px;">
+              <div id="consultantStatusBanner" class="small mb-2 text-muted">Describe your need on the left and submit.</div>
+              <div id="consultantOutputArea" class="small text-secondary mb-3" style="white-space: pre-line; line-height: 1.7;">
+Expert craft recommendations will appear here, detailing why specific motifs match your occasion and highlighting matching catalog products.
+              </div>
+
+              <!-- Container for matched products -->
+              <div id="consultantMatchedProducts" class="row g-2 mt-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Product Story Form Submit
+  const formStory = document.getElementById('formProductStory');
+  const btnStory = document.getElementById('btnSubmitStory');
+  const storyOutput = document.getElementById('storyOutputArea');
+  const storyBanner = document.getElementById('storyStatusBanner');
+
+  if (formStory) {
+    formStory.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btnStory.disabled = true;
+      btnStory.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Weaving Narrative...';
+      storyBanner.innerHTML = '<span class="badge bg-warning text-dark">Consulting craft traditions...</span>';
+
+      const payload = {
+        title: document.getElementById('storyTitle').value,
+        style: document.getElementById('storyStyle').value,
+        motif: document.getElementById('storyMotif').value,
+        category: document.getElementById('storyCategory').value,
+        dyes: document.getElementById('storyDyes').value
+      };
+
+      try {
+        const resp = await fetch('/api/ai/product-description', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const data = await resp.json();
+        if (data.success) {
+          storyOutput.innerHTML = data.text;
+          storyBanner.innerHTML = `<span class="badge bg-success">✨ Generated via ${data.engine} (${data.mode === 'live_api' ? 'Live API' : 'Demo Fallback'})</span>`;
+        } else {
+          storyOutput.innerText = data.message || 'Error occurred';
+        }
+      } catch (err) {
+        storyOutput.innerText = 'Service request failed. Check server connection.';
+      } finally {
+        btnStory.disabled = false;
+        btnStory.innerHTML = '<i class="bi bi-stars me-1"></i> Generate Heritage Story';
+      }
+    });
+  }
+
+  // 2. Marketing Captions Submit
+  const formMkt = document.getElementById('formMarketing');
+  const btnMkt = document.getElementById('btnSubmitMarketing');
+  const mktOutput = document.getElementById('mktOutputArea');
+  const mktBanner = document.getElementById('mktStatusBanner');
+
+  if (formMkt) {
+    formMkt.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btnMkt.disabled = true;
+      btnMkt.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Crafting Campaigns...';
+      mktBanner.innerHTML = '<span class="badge bg-warning text-dark">Formulating social hooks...</span>';
+
+      const payload = {
+        title: document.getElementById('mktTitle').value,
+        style: document.getElementById('mktStyle').value,
+        category: document.getElementById('mktCategory').value,
+        price: document.getElementById('mktPrice').value,
+        notes: document.getElementById('mktNotes').value
+      };
+
+      try {
+        const resp = await fetch('/api/ai/marketing-captions', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const data = await resp.json();
+        if (data.success) {
+          mktOutput.innerHTML = data.text;
+          mktBanner.innerHTML = `<span class="badge bg-success">✨ Generated via ${data.engine}</span>`;
+        } else {
+          mktOutput.innerText = data.message || 'Error occurred';
+        }
+      } catch (err) {
+        mktOutput.innerText = 'Service request failed.';
+      } finally {
+        btnMkt.disabled = false;
+        btnMkt.innerHTML = '<i class="bi bi-megaphone me-1"></i> Generate Social Media Pack';
+      }
+    });
+  }
+
+  // 3. Buyer Consultant Submit
+  const formConsultant = document.getElementById('formConsultant');
+  const btnConsultant = document.getElementById('btnSubmitConsultant');
+  const consultantOutput = document.getElementById('consultantOutputArea');
+  const consultantBanner = document.getElementById('consultantStatusBanner');
+  const matchedContainer = document.getElementById('consultantMatchedProducts');
+
+  // Quick Prompt buttons
+  document.querySelectorAll('.quick-prompt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('consultantQuery').value = btn.getAttribute('data-query');
+    });
+  });
+
+  if (formConsultant) {
+    formConsultant.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btnConsultant.disabled = true;
+      btnConsultant.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Analyzing Motifs...';
+      consultantBanner.innerHTML = '<span class="badge bg-warning text-dark">Analyzing craft aesthetics...</span>';
+      matchedContainer.innerHTML = '';
+
+      const query = document.getElementById('consultantQuery').value;
+
+      try {
+        const resp = await fetch('/api/ai/buyer-recommendation', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ query })
+        });
+        const data = await resp.json();
+        if (data.success) {
+          consultantOutput.innerHTML = data.text;
+          consultantBanner.innerHTML = `<span class="badge bg-success">✨ Evaluated via ${data.engine}</span>`;
+
+          if (data.matched_products && data.matched_products.length > 0) {
+            let cardsHtml = '<div class="col-12"><h6 class="fw-bold text-dark mt-2 mb-1">Recommended Handcrafted Pieces:</h6></div>';
+            data.matched_products.forEach(p => {
+              cardsHtml += `
+                <div class="col-6 col-md-4">
+                  <div class="card p-2 border shadow-sm h-100 bg-white">
+                    <img src="${p.image_url}" class="rounded mb-2" style="height: 90px; object-fit: cover;">
+                    <div class="small fw-bold text-truncate">${p.title}</div>
+                    <div class="small text-danger fw-bold">₹${Number(p.price).toLocaleString()}</div>
+                    <a href="/products/${p.id}" class="btn btn-xs btn-outline-dark mt-1">View Piece</a>
+                  </div>
+                </div>
+              `;
+            });
+            matchedContainer.innerHTML = cardsHtml;
+          }
+        } else {
+          consultantOutput.innerText = data.message || 'Error occurred';
+        }
+      } catch (err) {
+        consultantOutput.innerText = 'Service request failed.';
+      } finally {
+        btnConsultant.disabled = false;
+        btnConsultant.innerHTML = '<i class="bi bi-compass me-1"></i> Get Heritage Advice';
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

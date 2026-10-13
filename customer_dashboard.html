@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Dashboard | Kalamkari Connect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Top Welcome Banner -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center bg-white p-4 rounded-4 shadow-sm border mb-4">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <h2 class="font-heritage fw-bold mb-0 text-dark">Namaste, {{ current_user.full_name }}</h2>
+        <span class="badge bg-info text-dark"><i class="bi bi-heart-fill text-danger me-1"></i> Heritage Patron</span>
+      </div>
+      <p class="text-muted small mb-0">
+        <i class="bi bi-envelope me-1"></i> {{ current_user.email }}
+        &bull; <i class="bi bi-telephone me-1"></i> {{ current_user.phone or 'Contact not added' }}
+        &bull; Member since {{ current_user.created_at.strftime('%B %Y') }}
+      </p>
+    </div>
+    <div class="d-flex gap-2 mt-3 mt-md-0">
+      <a href="{{ url_for('marketplace') }}" class="btn btn-kalamkari-indigo">
+        <i class="bi bi-shop me-1"></i> Explore Marketplace
+      </a>
+      <a href="{{ url_for('ai_assistant') }}" class="btn btn-kalamkari-gold">
+        <i class="bi bi-stars me-1"></i> Kalamkari Mitra AI
+      </a>
+    </div>
+  </div>
+
+  <!-- Customer KPI / Impact Metrics -->
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card">
+        <span class="text-muted small text-uppercase fw-semibold">Orders Placed</span>
+        <div class="stat-number">{{ orders|length }}</div>
+        <span class="small text-muted"><i class="bi bi-receipt me-1"></i> Total transactions</span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card terracotta">
+        <span class="text-muted small text-uppercase fw-semibold">Direct Artisan Support</span>
+        <div class="stat-number">₹{{ "{:,.0f}".format(total_spent) }}</div>
+        <span class="small text-success"><i class="bi bi-patch-check-fill me-1"></i> 100% fair wages paid</span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card gold">
+        <span class="text-muted small text-uppercase fw-semibold">Items in Handloom Bag</span>
+        <div class="stat-number">{{ cart_count }}</div>
+        <span class="small text-primary"><a href="{{ url_for('view_cart') }}" class="text-decoration-none">View cart items &rarr;</a></span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-card">
+        <span class="text-muted small text-uppercase fw-semibold">Craft Traditions Supported</span>
+        <div class="stat-number">2</div>
+        <span class="small text-muted">Srikalahasti &amp; Machilipatnam</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orders History Section -->
+  <div class="card card-kalamkari border-0 shadow-sm p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+      <h5 class="fw-bold text-dark mb-0">
+        <i class="bi bi-box-seam me-2 text-danger"></i> Recent Handcrafted Orders
+      </h5>
+      <a href="{{ url_for('orders_history') }}" class="btn btn-sm btn-outline-dark">
+        View All Tracking Details &rarr;
+      </a>
+    </div>
+
+    {% if orders %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light small">
+            <tr>
+              <th>Order Number</th>
+              <th>Date</th>
+              <th>Pieces</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders[:5] %}
+              <tr>
+                <td><code>{{ order.order_number }}</code></td>
+                <td class="small text-muted">{{ order.created_at.strftime('%d %b %Y') }}</td>
+                <td>
+                  <span class="badge bg-secondary">{{ order.items|length }} item(s)</span>
+                </td>
+                <td class="fw-bold text-danger">₹{{ "{:,.0f}".format(order.total_amount) }}</td>
+                <td>
+                  <span class="badge {% if order.status == 'Delivered' %}bg-success{% elif order.status == 'Shipped' %}bg-info text-dark{% elif order.status == 'Processing' %}bg-warning text-dark{% elif order.status == 'Cancelled' %}bg-danger{% else %}bg-secondary{% endif %}">
+                    {{ order.status }}
+                  </span>
+                </td>
+                <td class="text-end">
+                  <a href="{{ url_for('orders_history') }}" class="btn btn-sm btn-outline-secondary">
+                    Track Order
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="text-center py-4 text-muted">
+        <i class="bi bi-bag-heart display-4 d-block mb-2 text-secondary opacity-50"></i>
+        <p class="mb-2">You haven't placed any handcrafted orders yet.</p>
+        <a href="{{ url_for('marketplace') }}" class="btn btn-kalamkari-primary btn-sm">
+          Discover Handloom Creations
+        </a>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Cultural Heritage Advisory Callout -->
+  <div class="p-4 rounded-4 shadow-sm text-white" style="background: linear-gradient(135deg, var(--k-indigo), var(--k-terracotta));">
+    <div class="row align-items-center g-3">
+      <div class="col-md-8">
+        <h5 class="font-heritage mb-1">Need Personal Craft Advice?</h5>
+        <p class="small mb-0 opacity-90">
+          Our AI assistant <strong>Kalamkari Mitra</strong> can help you choose the ideal sacred motif (Tree of Life, Peacock, Lotus) for your home decor or ceremonial gifting.
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <a href="{{ url_for('ai_assistant') }}" class="btn btn-light fw-bold text-dark btn-sm px-3">
+          <i class="bi bi-stars text-warning me-1"></i> Consult AI Assistant
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

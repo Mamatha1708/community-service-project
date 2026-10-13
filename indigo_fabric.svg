@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <!-- Deep natural Indigo vat gradient -->
+    <linearGradient id="indigo-vat" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#142B4D"/>
+      <stop offset="50%" stop-color="#1B365D"/>
+      <stop offset="100%" stop-color="#244573"/>
+    </linearGradient>
+    <pattern id="kalamkari-jaal" width="80" height="80" patternUnits="userSpaceOnUse">
+      <!-- Repeating Floral Block Motif -->
+      <path d="M40 10 C30 25 30 35 40 40 C50 35 50 25 40 10 Z" fill="#FFFDF7" opacity="0.85"/>
+      <path d="M40 70 C30 55 30 45 40 40 C50 45 50 55 40 70 Z" fill="#FFFDF7" opacity="0.85"/>
+      <path d="M10 40 C25 30 35 30 40 40 C35 50 25 50 10 40 Z" fill="#FFFDF7" opacity="0.85"/>
+      <path d="M70 40 C55 30 45 30 40 40 C45 50 55 50 70 40 Z" fill="#FFFDF7" opacity="0.85"/>
+      <circle cx="40" cy="40" r="6" fill="#D4A017"/>
+      
+      <!-- Corner Vine Dots in Terracotta -->
+      <circle cx="0" cy="0" r="5" fill="#A93C24"/>
+      <circle cx="80" cy="0" r="5" fill="#A93C24"/>
+      <circle cx="0" cy="80" r="5" fill="#A93C24"/>
+      <circle cx="80" cy="80" r="5" fill="#A93C24"/>
+    </pattern>
+  </defs>
+  <!-- Indigo Dyed Base -->
+  <rect width="600" height="600" fill="url(#indigo-vat)"/>
+  
+  <!-- Repeated Block Print Pattern -->
+  <rect x="40" y="40" width="520" height="520" fill="url(#kalamkari-jaal)"/>
+
+  <!-- Ornate Border Frame -->
+  <rect x="25" y="25" width="550" height="550" fill="none" stroke="#D4A017" stroke-width="6"/>
+  <rect x="36" y="36" width="528" height="528" fill="none" stroke="#A93C24" stroke-width="3"/>
+
+  <!-- Center Heritage Medallion -->
+  <circle cx="300" cy="300" r="90" fill="#1B365D" stroke="#D4A017" stroke-width="4"/>
+  <circle cx="300" cy="300" r="75" fill="#FAF4EB"/>
+  
+  <!-- Medallion Floral Center -->
+  <circle cx="300" cy="300" r="22" fill="#A93C24"/>
+  <circle cx="300" cy="300" r="10" fill="#D4A017"/>
+  <circle cx="300" cy="300" r="4" fill="#FFFDF7"/>
+
+  <!-- 8 Petals around center -->
+  <g fill="#1B365D">
+    <ellipse cx="300" cy="255" rx="10" ry="18"/>
+    <ellipse cx="300" cy="345" rx="10" ry="18"/>
+    <ellipse cx="255" cy="300" rx="18" ry="10"/>
+    <ellipse cx="345" cy="300" rx="18" ry="10"/>
+    <ellipse cx="268" cy="268" rx="14" ry="14"/>
+    <ellipse cx="332" cy="268" rx="14" ry="14"/>
+    <ellipse cx="268" cy="332" rx="14" ry="14"/>
+    <ellipse cx="332" cy="332" rx="14" ry="14"/>
+  </g>
+
+  <!-- Badge Label -->
+  <rect x="175" y="525" width="250" height="34" rx="17" fill="#D4A017"/>
+  <text x="300" y="547" fill="#1B365D" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" letter-spacing="1">NATURAL INDIGO YARDAGE</text>
+</svg>
